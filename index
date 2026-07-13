@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Имя → Отчество + Генератор</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: linear-gradient(145deg, #f0f4fc 0%, #d9e2ef 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', Roboto, system-ui, -apple-system, sans-serif;
+            padding: 16px;
+            margin: 0;
+            touch-action: manipulation;
+        }
+
+        .app {
+            background: #ffffff;
+            max-width: 520px;
+            width: 100%;
+            padding: 24px 20px 30px;
+            border-radius: 28px;
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.12);
+            transition: 0.3s;
+        }
+
+        h1 {
+            text-align: center;
+            font-weight: 600;
+            font-size: 26px;
+            color: #1a2a3a;
+            margin-bottom: 4px;
+            letter-spacing: -0.3px;
+        }
+
+        .app-sub {
+            text-align: center;
+            color: #5e6f8d;
+            font-size: 14px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #e9ecf2;
+            padding-bottom: 14px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 24px;
+            background: #f0f4fc;
+            border-radius: 16px;
+            padding: 4px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px 4px;
+            border: none;
+            background: transparent;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 500;
+            color: #3d4e66;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+            text-align: center;
+            letter-spacing: 0.2px;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .tab-btn.active {
+            background: #ffffff;
+            color: #1a2a3a;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+        }
+
+        .tab-btn:active {
+            background: #e0e8f5;
+        }
+
+        .tab-panel {
+            display: none;
+            animation: fade 0.2s ease;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        @keyframes fade {
+            from { opacity: 0.5; }
+            to { opacity: 1; }
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            font-weight: 500;
+            font-size: 14px;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 14px 16px;
+            font-size: 16px;
+            border: 1px solid #d0d7e3;
+            border-radius: 14px;
+            background: #f8faff;
+            transition: 0.25s;
+            outline: none;
+            -webkit-appearance: none;
+            touch-action: manipulation;
+        }
+
+        input[type="text"]:focus {
+            border-color: #4a6cf7;
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(74, 108, 247, 0.15);
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-top: 2px;
+        }
+
+        .radio-group input[type="radio"] {
+            display: none;
+        }
+
+        .radio-group label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 400;
+            font-size: 15px;
+            color: #2c3e50;
+            cursor: pointer;
+            padding: 8px 18px 8px 14px;
+            border-radius: 40px;
+            background: #f0f4fc;
+            transition: background 0.2s, color 0.2s;
+            user-select: none;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .radio-group input[type="radio"]:checked + label {
+            background: #4a6cf7;
+            color: #ffffff;
+        }
+
+        .radio-group label::before {
+            content: "";
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: 2px solid #b0c0d8;
+            background: #ffffff;
+            transition: 0.2s;
+            flex-shrink: 0;
+        }
+
+        .radio-group input[type="radio"]:checked + label::before {
+            border-color: #4a6cf7;
+            background: #4a6cf7;
+            box-shadow: inset 0 0 0 4px #ffffff;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 15px;
+            font-size: 17px;
+            font-weight: 600;
+            background: #4a6cf7;
+            color: #ffffff;
+            border: none;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: background 0.2s, box-shadow 0.2s;
+            letter-spacing: 0.3px;
+            margin-top: 4px;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .btn-primary:active {
+            background: #3a5cd9;
+        }
+
+        .result-box {
+            margin-top: 22px;
+            padding: 18px 16px;
+            background: #f8faff;
+            border-radius: 16px;
+            text-align: center;
+            font-size: 22px;
+            font-weight: 500;
+            color: #1a2a3a;
+            border: 1px solid #e9ecf2;
+            min-height: 68px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.3s;
+            word-break: break-word;
+        }
+
+        .result-box.error {
+            color: #d14545;
+            background: #fff4f4;
+            border-color: #f5c6c6;
+            font-size: 16px;
+        }
+
+        .result-box.success {
+            color: #1a7a3a;
+            background: #e6f7ed;
+            border-color: #b8e0cc;
+        }
+
+        .gen-options {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 4px;
+        }
+
+        .gen-options label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 400;
+            font-size: 15px;
+            color: #2c3e50;
+            cursor: pointer;
+            padding: 6px 12px;
+            background: #f0f4fc;
+            border-radius: 30px;
+            transition: background 0.2s, color 0.2s;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .gen-options input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #4a6cf7;
+            cursor: pointer;
+            touch-action: manipulation;
+        }
+
+        .gen-options label:has(input:checked) {
+            background: #4a6cf7;
+            color: #ffffff;
+        }
+
+        @media (max-width: 460px) {
+            .app {
+                padding: 18px 14px 22px;
+            }
+            h1 {
+                font-size: 22px;
+            }
+            .tab-btn {
+                font-size: 14px;
+                padding: 8px 2px;
+            }
+            .radio-group label {
+                padding: 6px 14px 6px 10px;
+                font-size: 14px;
+            }
+            .gen-options label {
+                font-size: 14px;
+                padding: 5px 10px;
+            }
+            .result-box {
+                font-size: 19px;
+                min-height: 60px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .tabs {
+                flex-direction: column;
+                gap: 4px;
+            }
+            .tab-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app">
+    <h1>📛 Имя &amp; Отчество</h1>
+    <div class="app-sub">Введите имя или сгенерируйте случайное</div>
+
+    <div class="tabs" role="tablist">
+        <button class="tab-btn active" data-tab="tab1" role="tab">По имени</button>
+        <button class="tab-btn" data-tab="tab2" role="tab">Генератор</button>
+    </div>
+
+    <div id="tab1" class="tab-panel active" role="tabpanel">
+        <div class="form-group">
+            <label for="nameInput">Имя отца</label>
+            <input type="text" id="nameInput" placeholder="Например, Александр" autocomplete="off">
+        </div>
+
+        <div class="form-group">
+            <label>Ваш пол</label>
+            <div class="radio-group">
+                <input type="radio" name="gender1" value="male" id="male1" checked>
+                <label for="male1">Мужской</label>
+                <input type="radio" name="gender1" value="female" id="female1">
+                <label for="female1">Женский</label>
+            </div>
+        </div>
+
+        <button class="btn-primary" id="generateBtn1">Показать отчество</button>
+
+        <div id="result1" class="result-box">Введите имя и нажмите кнопку</div>
+    </div>
+
+    <div id="tab2" class="tab-panel" role="tabpanel">
+        <div class="form-group">
+            <label>Что генерировать</label>
+            <div class="gen-options">
+                <label><input type="checkbox" id="genName" checked> Имя</label>
+                <label><input type="checkbox" id="genPatr" checked> Отчество</label>
+            </div>
+            <div style="font-size:13px; color:#5e6f8d; margin-top:4px;">Выберите один или оба пункта</div>
+        </div>
+
+        <div class="form-group">
+            <label>Пол для отчества</label>
+            <div class="radio-group">
+                <input type="radio" name="gender2" value="male" id="male2" checked>
+                <label for="male2">Мужской</label>
+                <input type="radio" name="gender2" value="female" id="female2">
+                <label for="female2">Женский</label>
+            </div>
+            <div style="font-size:13px; color:#5e6f8d; margin-top:3px;">Используется только если генерируется отчество</div>
+        </div>
+
+        <button class="btn-primary" id="generateBtn2">🎲 Сгенерировать</button>
+
+        <div id="result2" class="result-box">Нажмите «Сгенерировать»</div>
+    </div>
+</div>
+
+<script>
+    (function() {
+        // ---------- ТОЛЬКО РУССКИЕ И СТАРОСЛАВЯНСКИЕ МУЖСКИЕ ИМЕНА (около 200) ----------
+        const maleNames = [
+            'александр', 'алексей', 'анатолий', 'андрей', 'антон',
+            'аркадий', 'арсений', 'артем', 'афанасий', 'богдан',
+            'борис', 'борислав', 'бронислав', 'вадим', 'валентин',
+            'валерий', 'василий', 'венедикт', 'викентий', 'виктор',
+            'виталий', 'владимир', 'владислав', 'влас', 'всеволод',
+            'вячеслав', 'гавриил', 'геннадий', 'георгий', 'герасим',
+            'глеб', 'гордей', 'григорий', 'гурий', 'давид',
+            'даниил', 'данила', 'демид', 'демьян', 'денис',
+            'дмитрий', 'добрыня', 'драгомир', 'евгений', 'егор',
+            'елеазар', 'елисей', 'емельян', 'еремей', 'ермолай',
+            'ефим', 'ефрем', 'захар', 'зиновий', 'иван',
+            'игнат', 'игнатий', 'игорь', 'изяслав', 'илья',
+            'иосиф', 'ипат', 'ипполит', 'казимир', 'калистрат',
+            'капитон', 'карп', 'касьян', 'киприан', 'кирилл',
+            'климент', 'клим', 'константин', 'козьма', 'кузьма',
+            'лаврентий', 'лазарь', 'лев', 'леонид', 'лука',
+            'любомир', 'макар', 'максим', 'марк', 'мартин',
+            'матвей', 'мечислав', 'мирон', 'мирослав', 'михаил',
+            'модест', 'мстислав', 'назар', 'нестор', 'никита',
+            'никифор', 'николай', 'нимфодор', 'олег', 'онисим',
+            'остап', 'павел', 'панкрат', 'парфен', 'патап',
+            'пересвет', 'петр', 'пимен', 'платон', 'поликарп',
+            'потап', 'прохор', 'радомир', 'ратибор', 'ратмир',
+            'родион', 'родислав', 'роман', 'ростислав', 'руслан',
+            'савва', 'савелий', 'самуил', 'сафон', 'святогор',
+            'святомир', 'святослав', 'севастьян', 'семен', 'серафим',
+            'сергей', 'сидор', 'сила', 'силуан', 'соломон',
+            'софрон', 'спиридон', 'станислав', 'степан', 'тарас',
+            'терентий', 'тимофей', 'тихон', 'трофим', 'ульян',
+            'устин', 'фадей', 'федор', 'федот', 'феликс',
+            'феофан', 'филипп', 'филон', 'фотий', 'харитон',
+            'христофор', 'эраст', 'ювеналий', 'юлий', 'юрий',
+            'яким', 'ян', 'януарий', 'ярополк', 'ярослав'
+        ];
+
+        // Мужские имена, оканчивающиеся на "а"/"я" (для проверки)
+        const maleAEnding = ['никита', 'илья', 'кузьма', 'фома', 'савва', 'лука', 'данила'];
+
+        // Исключения для нестандартных отчеств
+        const exceptions = {
+            'илья': ['Ильич', 'Ильинична'],
+            'данила': ['Данилович', 'Даниловна'],
+            'кузьма': ['Кузьмич', 'Кузьминична'],
+            'фома': ['Фомич', 'Фоминична'],
+            'лука': ['Лукич', 'Лукинична'],
+            'павел': ['Павлович', 'Павловна'],
+            'михаил': ['Михайлович', 'Михайловна'],
+            'лев': ['Львович', 'Львовна'],
+            'дмитрий': ['Дмитриевич', 'Дмитриевна'],
+            'пётр': ['Петрович', 'Петровна'],
+            'петр': ['Петрович', 'Петровна'],
+            'семён': ['Семёнович', 'Семёновна'],
+            'семен': ['Семёнович', 'Семёновна'],
+            'артём': ['Артёмович', 'Артёмовна'],
+            'артем': ['Артёмович', 'Артёмовна'],
+            'ёгор': ['Егорович', 'Егоровна'],
+            'егор': ['Егорович', 'Егоровна']
+        };
+
+        function getPatronymic(name, gender) {
+            const trimmed = name.trim();
+            if (!trimmed) return { text: 'Введите имя', error: true };
+            const lower = trimmed.toLowerCase();
+            const lastChar = lower.slice(-1);
+            if ((lastChar === 'а' || lastChar === 'я') && !maleAEnding.includes(lower)) {
+                return { text: 'Ошибка: введите мужское имя', error: true };
+            }
+            const exKey = lower;
+            if (exceptions[exKey]) {
+                return { text: gender === 'male' ? exceptions[exKey][0] : exceptions[exKey][1], error: false };
+            }
+            let base = '', maleSuffix = '', femaleSuffix = '';
+            if (lastChar === 'а' || lastChar === 'я') {
+                base = lower.slice(0, -1);
+                maleSuffix = 'ич';
+                femaleSuffix = 'ична';
+            } else if (lastChar === 'й') {
+                if (lower.endsWith('ий')) {
+                    base = lower.slice(0, -2) + 'ь';
+                    maleSuffix = 'евич';
+                    femaleSuffix = 'евна';
+                } else {
+                    base = lower.slice(0, -1);
+                    maleSuffix = 'евич';
+                    femaleSuffix = 'евна';
+                }
+            } else if (lastChar === 'ь') {
+                base = lower.slice(0, -1);
+                maleSuffix = 'евич';
+                femaleSuffix = 'евна';
+            } else {
+                base = lower;
+                maleSuffix = 'ович';
+                femaleSuffix = 'овна';
+            }
+            let result = base + (gender === 'male' ? maleSuffix : femaleSuffix);
+            result = result.charAt(0).toUpperCase() + result.slice(1);
+            return { text: result, error: false };
+        }
+
+        // ---------- Универсальная функция для событий (touch + click) ----------
+        function addTapListener(element, handler) {
+            if (!element) return;
+            let isTouched = false;
+            element.addEventListener('touchstart', function(e) {
+                isTouched = true;
+                handler(e);
+            }, { passive: true });
+            element.addEventListener('click', function(e) {
+                if (!isTouched) {
+                    handler(e);
+                }
+                isTouched = false;
+            });
+        }
+
+        // ---------- Вкладка 1 ----------
+        const nameInput = document.getElementById('nameInput');
+        const male1 = document.getElementById('male1');
+        const female1 = document.getElementById('female1');
+        const generateBtn1 = document.getElementById('generateBtn1');
+        const result1 = document.getElementById('result1');
+
+        function updateResult1() {
+            const name = nameInput.value.trim();
+            if (!name) {
+                result1.textContent = 'Введите имя и нажмите кнопку';
+                result1.className = 'result-box';
+                return;
+            }
+            const gender = male1.checked ? 'male' : 'female';
+            const { text, error } = getPatronymic(name, gender);
+            result1.textContent = text;
+            result1.className = 'result-box ' + (error ? 'error' : 'success');
+        }
+
+        addTapListener(generateBtn1, updateResult1);
+
+        nameInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                updateResult1();
+            }
+        });
+        male1.addEventListener('change', updateResult1);
+        female1.addEventListener('change', updateResult1);
+
+        // ---------- Вкладка 2 ----------
+        const genNameChk = document.getElementById('genName');
+        const genPatrChk = document.getElementById('genPatr');
+        const male2 = document.getElementById('male2');
+        const female2 = document.getElementById('female2');
+        const generateBtn2 = document.getElementById('generateBtn2');
+        const result2 = document.getElementById('result2');
+
+        function getRandomName() {
+            const idx = Math.floor(Math.random() * maleNames.length);
+            return maleNames[idx];
+        }
+
+        function generateRandom() {
+            const includeName = genNameChk.checked;
+            const includePatr = genPatrChk.checked;
+            if (!includeName && !includePatr) {
+                result2.textContent = 'Выберите хотя бы один вариант';
+                result2.className = 'result-box error';
+                return;
+            }
+            const gender = male2.checked ? 'male' : 'female';
+            const outputParts = [];
+            if (includeName) {
+                const randomName = getRandomName();
+                outputParts.push(randomName.charAt(0).toUpperCase() + randomName.slice(1));
+            }
+            if (includePatr) {
+                let baseName = getRandomName();
+                const { text, error } = getPatronymic(baseName, gender);
+                if (!error) outputParts.push(text);
+                else outputParts.push('(ошибка)');
+            }
+            const finalText = outputParts.join(' ') || 'Ничего не выбрано';
+            result2.textContent = finalText;
+            result2.className = 'result-box success';
+        }
+
+        addTapListener(generateBtn2, generateRandom);
+
+        // ---------- Переключение вкладок ----------
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const panels = {
+            tab1: document.getElementById('tab1'),
+            tab2: document.getElementById('tab2')
+        };
+
+        tabBtns.forEach(btn => {
+            addTapListener(btn, function(e) {
+                tabBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                Object.values(panels).forEach(p => p.classList.remove('active'));
+                const tabId = btn.dataset.tab;
+                if (panels[tabId]) panels[tabId].classList.add('active');
+            });
+        });
+
+        // Инициализация
+        result1.textContent = 'Введите имя и нажмите кнопку';
+        result1.className = 'result-box';
+        result2.textContent = 'Нажмите «Сгенерировать»';
+        result2.className = 'result-box';
+    })();
+</script>
+</body>
+</html>
