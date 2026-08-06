@@ -110,6 +110,10 @@
             --hp-mid-bg: rgba(251, 191, 36, 0.06);
             --hp-high-bg: rgba(251, 146, 60, 0.06);
             --hp-vhigh-bg: rgba(248, 113, 113, 0.06);
+            /* На тёмном фоне исходные --cat-* цвета (light-тема) теряют контраст — делаем их светлее */
+            --cat-blue: #60a5fa;
+            --cat-amber: #fbbf24;
+            --cat-violet: #c084fc;
         }
 
         body {
@@ -255,7 +259,14 @@
         }
         #tab-calculator .stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover); }
         #tab-calculator .stat-card .stat-label { font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:0.4px; color:var(--text-secondary); margin-bottom:4px; transition:color var(--transition); }
-        #tab-calculator .stat-card .stat-value { font-size:26px; font-weight:700; color:var(--text-primary); transition:color var(--transition); }
+        #tab-calculator .stat-card .stat-value {
+            font-size:26px;
+            font-weight:700;
+            color:var(--text-primary);
+            transition:color var(--transition);
+            word-break: break-word;
+            overflow-wrap: break-word;
+        }
         #tab-calculator .stat-card .stat-value .small { font-size:14px; font-weight:400; color:var(--text-secondary); margin-left:4px; }
         #tab-calculator .stat-card.accent .stat-value { color:var(--text-link); }
 
@@ -335,16 +346,13 @@
         #tab-calculator .actions-bar .btn-primary:hover { background: var(--bg-btn-primary-hover); }
         #tab-calculator .actions-bar .btn-danger { background: var(--bg-btn-danger); color: #b33a3a; }
         #tab-calculator .actions-bar .btn-danger:hover { background: var(--bg-btn-danger-hover); color: #a00000; }
-        #tab-calculator .actions-bar .export-select {
-            padding: 8px 14px; border-radius: var(--radius-btn); border: 2px solid var(--border-input);
-            background: var(--bg-input); color: var(--text-primary); font-size: 14px; font-weight: 500;
-            outline: none; cursor: pointer; transition: border-color var(--transition), background var(--transition), color var(--transition);
-            min-height: 40px;
-            appearance: auto;
-            background-image: none;
-            padding-right: 14px;
+        #tab-calculator .actions-bar .btn-export-png {
+            background: var(--bg-btn-primary);
+            color: var(--text-inverse);
         }
-        #tab-calculator .actions-bar .export-select:focus { border-color: var(--text-link); }
+        #tab-calculator .actions-bar .btn-export-png:hover {
+            background: var(--bg-btn-primary-hover);
+        }
 
         #tab-calculator .table-wrap {
             position: relative;
@@ -386,7 +394,7 @@
             width: 100%;
             border-collapse: collapse;
             font-size: 13px;
-            min-width: 1100px;
+            min-width: 1150px;
             background: var(--bg-card);
             transition: background var(--transition);
         }
@@ -429,6 +437,13 @@
             font-weight: 500;
             padding: 4px 0;
             display: block;
+        }
+        /* Чекбоксы в таблице */
+        #tab-calculator table.boss-table td .row-checkbox {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: var(--accent);
         }
         #tab-calculator table.boss-table td .del-btn {
             background: var(--bg-btn-danger);
@@ -604,16 +619,140 @@
             font-size: 0.92em;
             letter-spacing: -0.3px;
             padding-right: 3px;
+            transition: background 0.2s, box-shadow 0.2s;
+        }
+        /* Базовая тепловая карта HP — работает для ВСЕХ ячеек, вне зависимости от допок.
+           Цвет текста соответствует цвету подсветки, чтобы цифры и легенда читались как единая система. */
+        #tab-bosslist .hp-cell.hp-low   { background: var(--hp-low-bg);   color: var(--hp-low-color); }
+        #tab-bosslist .hp-cell.hp-mid   { background: var(--hp-mid-bg);   color: var(--hp-mid-color); }
+        #tab-bosslist .hp-cell.hp-high  { background: var(--hp-high-bg);  color: var(--hp-high-color); }
+        #tab-bosslist .hp-cell.hp-vhigh { background: var(--hp-vhigh-bg); color: var(--hp-vhigh-color); font-weight: 700; }
+
+        /* Ячейки с допками — яркая подсветка с белой обводкой (перекрывает базовую по специфичности) */
+        #tab-bosslist .hp-cell.has-dop {
+            cursor: pointer;
+            background: rgba(52, 211, 153, 0.25) !important;
+            position: relative;
+            border-radius: 2px;
+            outline: 1px solid rgba(255, 255, 255, 0.8);
+            outline-offset: -1px;
+            font-weight: 600;
+            transition: background 0.2s, box-shadow 0.2s, outline 0.2s;
+        }
+        #tab-bosslist .hp-cell.has-dop:hover {
+            background: var(--accent-glow) !important;
+            box-shadow: 0 0 0 3px var(--accent), inset 0 0 20px rgba(99, 102, 241, 0.15);
+            outline: 2px solid var(--accent);
+            z-index: 2;
         }
         #tab-bosslist .hp-cell.empty {
             background: transparent !important;
             color: var(--text-muted);
             opacity: 0.35;
+            cursor: default;
         }
-        #tab-bosslist .hp-low   { color: var(--hp-low-color);  background: var(--hp-low-bg); }
-        #tab-bosslist .hp-mid   { color: var(--hp-mid-color);  background: var(--hp-mid-bg); }
-        #tab-bosslist .hp-high  { color: var(--hp-high-color); background: var(--hp-high-bg); }
-        #tab-bosslist .hp-vhigh { color: var(--hp-vhigh-color); background: var(--hp-vhigh-bg); }
+        /* Переопределяем цвета HP для ячеек с допками (сохраняем оттенки) */
+        #tab-bosslist .hp-cell.has-dop.hp-low   { background: rgba(5, 150, 105, 0.25) !important; }
+        #tab-bosslist .hp-cell.has-dop.hp-mid   { background: rgba(217, 119, 6, 0.25) !important; }
+        #tab-bosslist .hp-cell.has-dop.hp-high  { background: rgba(234, 88, 12, 0.25) !important; }
+        #tab-bosslist .hp-cell.has-dop.hp-vhigh { background: rgba(220, 38, 38, 0.25) !important; }
+
+        /* Легенда тепловой карты — цвет иконки соответствует цвету ячеек с таким же HP */
+        .hp-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px 16px;
+            align-items: center;
+            margin: 2px 0 14px;
+            padding: 10px 14px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-input);
+            font-size: 12.5px;
+            color: var(--text-secondary);
+        }
+        .hp-legend-item { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+        .hp-legend-item i {
+            width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0;
+            display: inline-block;
+        }
+        .hp-legend-item i.hp-low   { background: var(--hp-low-bg);   box-shadow: inset 0 0 0 1px var(--hp-low-color); }
+        .hp-legend-item i.hp-mid   { background: var(--hp-mid-bg);   box-shadow: inset 0 0 0 1px var(--hp-mid-color); }
+        .hp-legend-item i.hp-high  { background: var(--hp-high-bg);  box-shadow: inset 0 0 0 1px var(--hp-high-color); }
+        .hp-legend-item i.hp-vhigh { background: var(--hp-vhigh-bg); box-shadow: inset 0 0 0 1px var(--hp-vhigh-color); }
+        .hp-legend-item i.has-dop {
+            background: rgba(52, 211, 153, 0.25);
+            outline: 1px solid rgba(255,255,255,0.8);
+            outline-offset: -1px;
+        }
+        .hp-legend-dop { color: var(--text-primary); font-weight: 500; }
+        @media (max-width: 480px) {
+            .hp-legend { font-size: 11.5px; padding: 8px 10px; gap: 5px 10px; }
+        }
+
+        /* ===== Tooltip ===== */
+        .boss-tooltip {
+            position: fixed;
+            background: var(--glass-bg-strong);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-input);
+            box-shadow: var(--shadow-hover);
+            padding: 10px 14px;
+            font-size: 13px;
+            line-height: 1.5;
+            color: var(--text-primary);
+            max-width: 280px;
+            z-index: 9999;
+            pointer-events: none;
+            transition: opacity 0.15s;
+            opacity: 0;
+        }
+        .boss-tooltip.visible {
+            opacity: 1;
+        }
+        .boss-tooltip .tt-title {
+            font-weight: 700;
+            margin-bottom: 2px;
+        }
+        .boss-tooltip .tt-mode {
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+        .boss-tooltip .tt-detail {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        .boss-tooltip .tt-dop-list {
+            margin: 4px 0 2px 0;
+            font-size: 12px;
+        }
+        .boss-tooltip .tt-dop-list .dop-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 1px 0;
+        }
+        .boss-tooltip .tt-dop-list .dop-item .dop-label {
+            color: var(--text-secondary);
+        }
+        .boss-tooltip .tt-dop-list .dop-item .dop-value {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+        .boss-tooltip .tt-max {
+            margin-top: 4px;
+            font-weight: 600;
+            color: var(--text-link);
+            border-top: 1px solid var(--border-color);
+            padding-top: 4px;
+        }
+        .boss-tooltip .tt-hint {
+            font-size: 11px;
+            margin-top: 4px;
+            color: var(--text-link);
+            font-weight: 500;
+        }
 
         #tab-bosslist .cat-besprel { border-top: 3px solid var(--cat-blue); }
         #tab-bosslist .cat-besprel .table-header { color: var(--cat-blue); }
@@ -640,6 +779,32 @@
         #tab-bosslist .btn-export2:hover {
             background: var(--bg-btn-primary-hover);
             transform: translateY(-1px);
+        }
+        #tab-bosslist .btn-export-png2 {
+            background: var(--bg-btn-primary);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 9px 18px;
+            border-radius: var(--radius-btn);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            box-shadow: var(--shadow-card);
+            transition: background 0.2s, transform 0.2s;
+        }
+        #tab-bosslist .btn-export-png2:hover {
+            background: var(--bg-btn-primary-hover);
+            transform: translateY(-1px);
+        }
+        #tab-bosslist .bosslist-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
         }
 
         /* ===== АДАПТАЦИЯ ===== */
@@ -672,6 +837,7 @@
             #tab-bosslist table th:first-child { z-index: 15; }
             #tab-bosslist .col-boss { min-width: 90px; width: auto; }
             #tab-bosslist .hp-cell { min-width: 72px; }
+            #tab-bosslist .bosslist-actions { justify-content: center; }
         }
         @media (max-width: 768px) {
             body { padding: 10px 6px; }
@@ -688,7 +854,7 @@
             #tab-calculator .stats-grid { grid-template-columns:repeat(2,1fr); gap:8px; margin-bottom: 14px; }
             #tab-calculator .stat-card .stat-value { font-size:20px; }
             #tab-calculator .actions-bar { flex-direction:column; align-items:stretch; }
-            #tab-calculator .actions-bar .btn, #tab-calculator .actions-bar .export-select { justify-content:center; width:100%; }
+            #tab-calculator .actions-bar .btn { justify-content:center; width:100%; }
             #tab-calculator table.boss-table { font-size:11px; min-width:820px; }
             #tab-calculator table.boss-table th, #tab-calculator table.boss-table td { padding:8px 6px; }
             #tab-calculator table.boss-table th:first-child,
@@ -707,7 +873,9 @@
             #tab-bosslist .col-boss { min-width: 80px; }
             #tab-bosslist .hp-cell { font-size: 11px; min-width: 68px; }
             #tab-bosslist .table-header { font-size: 13px; padding: 8px 12px; }
-            #tab-bosslist .btn-export2 { width: 100%; }
+            #tab-bosslist .btn-export2,
+            #tab-bosslist .btn-export-png2 { width: 100%; justify-content: center; }
+            #tab-bosslist .bosslist-actions { flex-direction: column; align-items: stretch; }
         }
         @media (max-width: 480px) {
             .logo-text .title { font-size:18px; }
@@ -716,7 +884,7 @@
             .header-actions .btn-link { font-size: 13px; padding: 6px 10px; }
             #tab-calculator .stats-grid { grid-template-columns:1fr 1fr; gap:6px; }
             #tab-calculator .stat-card { padding:12px 10px; }
-            #tab-calculator .stat-card .stat-value { font-size:18px; }
+            #tab-calculator .stat-card .stat-value { font-size:16px; word-break: break-word; }
             #tab-calculator .stat-card .stat-label { font-size:10px; }
             #tab-calculator .form-info-grid { grid-template-columns:1fr 1fr; }
             #tab-calculator .form-info-item .info-value { font-size:15px; }
@@ -812,19 +980,21 @@
 
         <!-- ACTIONS -->
         <div class="actions-bar">
-            <select class="export-select" id="exportFormat"><option value="tsv">TSV (для Excel)</option><option value="xls" selected>Excel (.xls)</option></select>
-            <button class="btn btn-primary" id="exportBtn">📄 Экспорт</button>
+            <button class="btn btn-primary" id="exportBtnExcel">📄 Экспорт Excel</button>
+            <button class="btn btn-primary btn-export-png" id="exportBtnPng">🖼 Экспорт PNG</button>
             <button class="btn btn-primary" id="importBtn">📂 Импорт</button>
             <button class="btn btn-danger" id="clearBtn">🗑 Очистить всё</button>
+            <button class="btn btn-danger" id="deleteSelectedBtn">🗑 Удалить выбранных</button>
             <input type="file" id="fileInput" accept=".tsv,.csv,.txt,.xls">
         </div>
 
         <!-- TABLE -->
         <p class="scroll-hint">← Листайте таблицу влево-вправо →</p>
-        <div class="table-wrap">
+        <div class="table-wrap" id="tableWrap">
             <table class="boss-table" id="bossTable">
                 <thead>
                     <tr>
+                        <th style="width:40px;"><input type="checkbox" id="selectAll" title="Выбрать все"></th>
                         <th>Босс</th>
                         <th>Режим</th>
                         <th>HP</th>
@@ -843,7 +1013,7 @@
                 <tbody id="tableBody"></tbody>
                 <tfoot id="tableFoot" style="display:none;">
                     <tr class="total-row">
-                        <td colspan="2" style="text-align:right; padding-right:16px;"><span class="total-label">ИТОГО:</span></td>
+                        <td colspan="3" style="text-align:right; padding-right:16px;"><span class="total-label">ИТОГО:</span></td>
                         <td></td>
                         <td id="totalHp">0</td>
                         <td colspan="4"></td>
@@ -864,21 +1034,29 @@
         <div class="guide">
             <h3>📖 Как пользоваться калькулятором</h3>
             <p><strong>1. Добавление босса:</strong> Выберите босса из списка, затем режим. Количество допок выбирается автоматически из доступных вариантов. Если режим не даёт допок, кнопка добавления будет заблокирована.</p>
-            <p><strong>2. Редактирование:</strong> Все поля в таблице можно менять прямо в ячейках — расчёт обновится мгновенно.</p>
+            <p><strong>2. Таблица только для просмотра:</strong> Все изменения вносятся через форму добавления вверху. В таблице нельзя редактировать данные напрямую.</p>
             <p><strong>3. Автосохранение:</strong> Все данные сохраняются в браузере (localStorage) и восстанавливаются при повторном открытии страницы.</p>
-            <p><strong>4. Экспорт:</strong> Выберите формат (TSV или Excel) и нажмите «Экспорт» — файл скачается автоматически.</p>
+            <p><strong>4. Экспорт:</strong> Кнопки «Экспорт Excel» и «Экспорт PNG» позволяют сохранить таблицу в нужном формате. Для PNG используется библиотека html2canvas (загружается с CDN).</p>
             <p><strong>5. Импорт:</strong> Нажмите «Импорт» и выберите ранее сохранённый файл (TSV или Excel .xls) — таблица восстановится.</p>
-            <p><strong>6. Очистка:</strong> Кнопка «Очистить всё» удаляет всех боссов и очищает локальное хранилище.</p>
+            <p><strong>6. Очистка:</strong> Кнопка «Очистить всё» удаляет всех боссов и очищает локальное хранилище. Также можно удалить выбранных боссов через чекбоксы и кнопку «Удалить выбранных».</p>
             <p style="margin-top:8px; color:var(--text-muted); font-size:13px;">ℹ️ Все числа отображаются с разделителями тысяч для удобства чтения.</p>
         </div>
     </div>
 
     <!-- ===== ТАБ 2: СПИСОК БОССОВ ===== -->
     <div class="tab-content" id="tab-bosslist">
-        <div style="margin-bottom:16px; display:flex; justify-content:flex-end;">
+        <div class="bosslist-actions">
             <button class="btn-export2" id="exportBtn2">⬇ Экспорт в Excel</button>
+            <button class="btn-export-png2" id="exportBtnPng2">🖼 Экспорт PNG</button>
         </div>
         <p class="scroll-hint">← Листайте таблицы влево-вправо →</p>
+        <div class="hp-legend">
+            <span class="hp-legend-item"><i class="hp-low"></i>Низкий HP</span>
+            <span class="hp-legend-item"><i class="hp-mid"></i>Средний HP</span>
+            <span class="hp-legend-item"><i class="hp-high"></i>Высокий HP</span>
+            <span class="hp-legend-item"><i class="hp-vhigh"></i>Очень высокий HP</span>
+            <span class="hp-legend-item hp-legend-dop"><i class="has-dop"></i>Есть допки — нажмите на ячейку</span>
+        </div>
         <div class="tables-grid" id="tablesContainer2">
             <p style="padding: 20px; text-align: center; width: 100%;">Загрузка...</p>
         </div>
@@ -888,6 +1066,9 @@
 
 <!-- Глобальный toast -->
 <div class="global-toast" id="globalToast"></div>
+
+<!-- Tooltip -->
+<div class="boss-tooltip" id="bossTooltip"></div>
 
 <!-- ===== СКРИПТЫ ===== -->
 <script>
@@ -971,7 +1152,7 @@
     }
 
     // ================================================================
-    // 4. СКРИПТ КАЛЬКУЛЯТОРА (первый файл)
+    // 4. СКРИПТ КАЛЬКУЛЯТОРА (первый файл) — с обновлёнными допками для Контрабаса
     // ================================================================
     (function calculator() {
         'use strict';
@@ -1059,8 +1240,63 @@
                     '6': { dmg: 70000000, max: 4 },
                     '12': { dmg: null, max: 0 }
                 }
+            },
+            // Боссы без допок (не будут в выпадающем списке)
+            'Мазай': {
+                hp: 25000000,
+                modes: {
+                    '1': { dmg: null, max: 0 },
+                    '3': { dmg: null, max: 0 },
+                    '6': { dmg: null, max: 0 }
+                }
+            },
+            'Ёхан': {
+                hp: 7000000,
+                modes: {
+                    '1': { dmg: null, max: 0 },
+                    '3': { dmg: null, max: 0 },
+                    '6': { dmg: null, max: 0 }
+                }
+            },
+            'Чебот': {
+                hp: 75000000,
+                modes: {
+                    '1': { dmg: null, max: 0 },
+                    '3': { dmg: null, max: 0 },
+                    '6': { dmg: null, max: 0 }
+                }
+            },
+            // Боссы с допками
+            'Старшой': {
+                hp: 600000000,
+                modes: {
+                    '1': { dmg: 18000000, max: 2 },
+                    '3': { dmg: null, max: 0 },
+                    '6': { dmg: 24000000, max: 3 },
+                    '12': { dmg: 52500000, max: 2 }
+                }
+            },
+            'Дантист': {
+                hp: 100000000,
+                modes: {
+                    '1': { dmg: null, max: 0 },
+                    '3': { dmg: 9000000, max: 2 },
+                    '6': { dmg: 12000000, max: 2 }
+                }
+            },
+            'Контрабас': {
+                hp: 200000000,
+                modes: {
+                    '1': { dmg: null, max: 0 },
+                    '3': { dmg: 24000000, max: 2 },
+                    '6': { dmg: null, max: 0 }
+                }
             }
         };
+
+        // Делаем BOSSES доступным глобально для tooltip
+        window._BOSSES = BOSSES;
+        window._MODES = MODES;
 
         const container = document.getElementById('tab-calculator');
         const bossSelect = container.querySelector('#bossSelect');
@@ -1081,11 +1317,12 @@
         const totalWinTatu = container.querySelector('#totalWinTatu');
         const totalAllTatu = container.querySelector('#totalAllTatu');
         const totalHp = container.querySelector('#totalHp');
-        const exportBtn = container.querySelector('#exportBtn');
+        const exportBtnExcel = document.getElementById('exportBtnExcel');
+        const exportBtnPng = document.getElementById('exportBtnPng');
         const importBtn = container.querySelector('#importBtn');
         const clearBtn = container.querySelector('#clearBtn');
+        const deleteSelectedBtn = document.getElementById('deleteSelectedBtn');
         const fileInput = container.querySelector('#fileInput');
-        const exportFormat = container.querySelector('#exportFormat');
         const statBosses = container.querySelector('#statBosses');
         const statTotalHp = container.querySelector('#statTotalHp');
         const statTotalDmg = container.querySelector('#statTotalDmg');
@@ -1135,6 +1372,27 @@
 
         function getTotalHp(boss) {
             return getHpPerAttack(boss) * boss.attackLimit;
+        }
+
+        // Единый расчёт показателей урона/тату для одного босса.
+        // Используется в updateStats(), renderTable(), exportTSV() и exportXLS(),
+        // чтобы логика подсчёта (включая особый случай Змея реж.6) не расходилась.
+        function calcBossRow(boss) {
+            let dmgPerAttack, displayDmg;
+            if (isZmei6(boss)) {
+                dmgPerAttack = getZmeiThreshold(boss);
+                const thresholds = BOSSES['Змей'].modes['6'].thresholds;
+                const idx = Math.min(boss.tatuPerAttack, thresholds.length - 1);
+                displayDmg = thresholds[idx] || 0;
+            } else {
+                dmgPerAttack = boss.dmgPerTatu * boss.tatuPerAttack;
+                displayDmg = boss.dmgPerTatu;
+            }
+            const totalDmg = dmgPerAttack * boss.attackLimit;
+            const extraTatu = boss.tatuPerAttack * boss.attackLimit;
+            const winTatu = boss.attackLimit;
+            const allTatu = extraTatu + winTatu;
+            return { dmgPerAttack, displayDmg, totalDmg, extraTatu, winTatu, allTatu };
         }
 
         function isModeLabel(text) {
@@ -1293,7 +1551,12 @@
 
         function populateBossSelect() {
             bossSelect.innerHTML = '';
-            const names = Object.keys(BOSSES).sort((a, b) => BOSSES[a].hp - BOSSES[b].hp);
+            const names = Object.keys(BOSSES)
+                .filter(name => {
+                    const boss = BOSSES[name];
+                    return Object.values(boss.modes).some(modeData => modeData.dmg !== null && modeData.max > 0);
+                })
+                .sort((a, b) => BOSSES[a].hp - BOSSES[b].hp);
             names.forEach(name => {
                 const opt = document.createElement('option');
                 opt.value = name;
@@ -1362,6 +1625,29 @@
             showToast('🗑 Босс удалён');
         }
 
+        function deleteSelected() {
+            const checkboxes = container.querySelectorAll('.row-checkbox:checked');
+            if (checkboxes.length === 0) {
+                showToast('⚠️ Выберите хотя бы одного босса');
+                return;
+            }
+            if (!confirm(`Удалить ${checkboxes.length} выбранных боссов?`)) return;
+            const ids = Array.from(checkboxes).map(cb => parseInt(cb.dataset.id));
+            bosses = bosses.filter(b => !ids.includes(b.id));
+            saveToLocalStorage();
+            renderTable();
+            updateStats();
+            showToast(`🗑 Удалено ${ids.length} боссов`);
+        }
+        deleteSelectedBtn.addEventListener('click', deleteSelected);
+
+        // Обработчик "выбрать все"
+        const selectAll = document.getElementById('selectAll');
+        selectAll.addEventListener('change', function() {
+            const checkboxes = container.querySelectorAll('.row-checkbox');
+            checkboxes.forEach(cb => cb.checked = this.checked);
+        });
+
         function clearAll() {
             if (bosses.length === 0) {
                 showToast('⚠️ Нет данных для очистки');
@@ -1383,19 +1669,10 @@
             let sumDmg = 0, sumExtra = 0, sumAll = 0;
             let sumHp = 0;
             bosses.forEach(boss => {
-                let dmgPerAttack;
-                if (isZmei6(boss)) {
-                    dmgPerAttack = getZmeiThreshold(boss);
-                } else {
-                    dmgPerAttack = boss.dmgPerTatu * boss.tatuPerAttack;
-                }
-                const totalDmg = dmgPerAttack * boss.attackLimit;
-                const extraTatu = boss.tatuPerAttack * boss.attackLimit;
-                const winTatu = boss.attackLimit;
-                const allTatu = extraTatu + winTatu;
-                sumDmg += totalDmg;
-                sumExtra += extraTatu;
-                sumAll += allTatu;
+                const row = calcBossRow(boss);
+                sumDmg += row.totalDmg;
+                sumExtra += row.extraTatu;
+                sumAll += row.allTatu;
                 sumHp += getTotalHp(boss);
             });
             statTotalHp.textContent = fmt(sumHp);
@@ -1409,93 +1686,58 @@
             totalHp.textContent = fmt(sumHp);
         }
 
-        // ========== НОВАЯ БЕЗОПАСНАЯ РЕНДЕРИНГ ТАБЛИЦЫ ==========
         function renderTable() {
-            // Очищаем тело таблицы
-            tableBody.replaceChildren();
-
             if (bosses.length === 0) {
+                tableBody.innerHTML = '';
                 tableFoot.style.display = 'none';
                 emptyMessage.style.display = 'block';
+                selectAll.checked = false;
                 return;
             }
             emptyMessage.style.display = 'none';
             tableFoot.style.display = 'table-footer-group';
 
-            // Строим строки через DOM
-            bosses.forEach((boss) => {
-                const tr = document.createElement('tr');
-                tr.className = 'boss-row';
+            let html = '';
+            bosses.forEach((boss, index) => {
+                const { dmgPerAttack, displayDmg, totalDmg, extraTatu, winTatu, allTatu } = calcBossRow(boss);
 
-                // Вычисляем значения
-                let dmgPerAttack;
-                let displayDmg;
-                const isZmei = isZmei6(boss);
-
-                if (isZmei) {
-                    dmgPerAttack = getZmeiThreshold(boss);
-                    const thresholds = BOSSES['Змей'].modes['6'].thresholds;
-                    const idx = Math.min(boss.tatuPerAttack, thresholds.length - 1);
-                    displayDmg = thresholds[idx] || 0;
-                } else {
-                    dmgPerAttack = boss.dmgPerTatu * boss.tatuPerAttack;
-                    displayDmg = boss.dmgPerTatu;
-                }
-
-                const totalDmg = dmgPerAttack * boss.attackLimit;
-                const extraTatu = boss.tatuPerAttack * boss.attackLimit;
-                const winTatu = boss.attackLimit;
-                const allTatu = extraTatu + winTatu;
-
-                // Создаём ячейки
-                const cellData = [
-                    boss.name,
-                    getModeLabel(boss.mode),
-                    fmt(getHpPerAttack(boss)),
-                    fmt(getTotalHp(boss)),
-                    fmt(displayDmg),
-                    boss.tatuPerAttack,
-                    boss.attackLimit,
-                    fmt(dmgPerAttack),
-                    fmt(totalDmg),
-                    fmt(extraTatu),
-                    fmt(winTatu),
-                    fmt(allTatu)
-                ];
-
-                cellData.forEach(text => {
-                    const td = document.createElement('td');
-                    const span = document.createElement('span');
-                    span.className = 'static-text';
-                    span.textContent = text;
-                    td.appendChild(span);
-                    tr.appendChild(td);
-                });
-
-                // Ячейка с кнопкой удаления
-                const tdDel = document.createElement('td');
-                const delBtn = document.createElement('button');
-                delBtn.className = 'del-btn';
-                delBtn.dataset.id = boss.id;
-                delBtn.textContent = '✕';
-                tdDel.appendChild(delBtn);
-                tr.appendChild(tdDel);
-
-                tableBody.appendChild(tr);
+                html += `<tr class="boss-row" data-index="${index}">`;
+                html += `<td><input type="checkbox" class="row-checkbox" data-id="${boss.id}"></td>`;
+                html += `<td><span class="static-text">${boss.name}</span></td>`;
+                html += `<td><span class="static-text">${getModeLabel(boss.mode)}</span></td>`;
+                html += `<td><span class="static-text">${fmt(getHpPerAttack(boss))}</span></td>`;
+                html += `<td><span class="static-text">${fmt(getTotalHp(boss))}</span></td>`;
+                html += `<td><span class="static-text">${fmt(displayDmg)}</span></td>`;
+                html += `<td><span class="static-text">${boss.tatuPerAttack}</span></td>`;
+                html += `<td><span class="static-text">${boss.attackLimit}</span></td>`;
+                html += `<td><span class="static-text">${fmt(dmgPerAttack)}</span></td>`;
+                html += `<td><span class="static-text">${fmt(totalDmg)}</span></td>`;
+                html += `<td><span class="static-text">${fmt(extraTatu)}</span></td>`;
+                html += `<td><span class="static-text">${fmt(winTatu)}</span></td>`;
+                html += `<td><span class="static-text">${fmt(allTatu)}</span></td>`;
+                html += `<td><button class="del-btn" data-id="${boss.id}">✕</button></td>`;
+                html += `</tr>`;
             });
 
-            // Обновляем статистику (вызывается отдельно)
+            tableBody.innerHTML = html;
             updateStats();
-        }
 
-        // Делегирование событий для кнопок удаления (вместо querySelectorAll)
-        tableBody.addEventListener('click', function(e) {
-            const btn = e.target.closest('.del-btn');
-            if (btn) {
-                const id = parseInt(btn.dataset.id, 10);
-                deleteBoss(id);
-            }
-        });
+            container.querySelectorAll('.del-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = parseInt(this.dataset.id);
+                    deleteBoss(id);
+                });
+            });
+
+            const checkboxes = container.querySelectorAll('.row-checkbox');
+            checkboxes.forEach(cb => {
+                cb.addEventListener('change', function() {
+                    const allChecked = container.querySelectorAll('.row-checkbox:checked').length === checkboxes.length;
+                    selectAll.checked = allChecked;
+                });
+            });
+            selectAll.checked = false;
+        }
 
         function saveToLocalStorage() {
             const data = { bosses, nextId };
@@ -1522,35 +1764,10 @@
             if (bosses.length === 0) { showToast('⚠️ Нет данных для экспорта'); return null; }
             let header = ['Босс','Режим','HP','Итоговое HP','Урон на 1 доп. тату','Доп. тату за нападение','Лимит нападений','Урон за нападение','Общий урон','Доп. тату','Тату за победы','Всего тату'];
             let rows = [];
-            bosses.forEach(boss => {
-                let dmgPerAttack, displayDmg;
-                if (isZmei6(boss)) {
-                    dmgPerAttack = getZmeiThreshold(boss);
-                    const thresholds = BOSSES['Змей'].modes['6'].thresholds;
-                    const idx = Math.min(boss.tatuPerAttack, thresholds.length - 1);
-                    displayDmg = thresholds[idx] || 0;
-                } else {
-                    dmgPerAttack = boss.dmgPerTatu * boss.tatuPerAttack;
-                    displayDmg = boss.dmgPerTatu;
-                }
-                const totalDmg = dmgPerAttack * boss.attackLimit;
-                const extraTatu = boss.tatuPerAttack * boss.attackLimit;
-                const winTatu = boss.attackLimit;
-                const allTatu = extraTatu + winTatu;
-                rows.push([boss.name, getModeLabel(boss.mode), getHpPerAttack(boss), getTotalHp(boss), displayDmg, boss.tatuPerAttack, boss.attackLimit, dmgPerAttack, totalDmg, extraTatu, winTatu, allTatu]);
-            });
             let sumHp=0,sumDmg=0,sumExtra=0,sumWin=0,sumAll=0;
             bosses.forEach(boss => {
-                let dmgPerAttack;
-                if (isZmei6(boss)) {
-                    dmgPerAttack = getZmeiThreshold(boss);
-                } else {
-                    dmgPerAttack = boss.dmgPerTatu * boss.tatuPerAttack;
-                }
-                const totalDmg = dmgPerAttack * boss.attackLimit;
-                const extraTatu = boss.tatuPerAttack * boss.attackLimit;
-                const winTatu = boss.attackLimit;
-                const allTatu = extraTatu + winTatu;
+                const { dmgPerAttack, displayDmg, totalDmg, extraTatu, winTatu, allTatu } = calcBossRow(boss);
+                rows.push([boss.name, getModeLabel(boss.mode), getHpPerAttack(boss), getTotalHp(boss), displayDmg, boss.tatuPerAttack, boss.attackLimit, dmgPerAttack, totalDmg, extraTatu, winTatu, allTatu]);
                 sumHp += getTotalHp(boss);
                 sumDmg += totalDmg; sumExtra += extraTatu; sumWin += winTatu; sumAll += allTatu;
             });
@@ -1560,76 +1777,83 @@
             return tsv;
         }
 
+        // Числовая ячейка для экспорта: Excel получает настоящее число (можно суммировать,
+        // сортировать, использовать в формулах), а mso-number-format задаёт вид "1 234 567".
+        function xlsNum(n) {
+            const val = Math.round(n) || 0;
+            return `<td style="mso-number-format:'#,##0';text-align:right;">${val}</td>`;
+        }
+        function xlsText(s) {
+            return `<td>${s}</td>`;
+        }
+
         function exportXLS() {
             if (bosses.length === 0) { showToast('⚠️ Нет данных для экспорта'); return null; }
-            let html = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="UTF-8"><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>Боссы</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--><style>table{border-collapse:collapse;font-family:'Segoe UI',sans-serif;font-size:12pt;}th{background:#dce5f0;font-weight:bold;text-align:center;border:1px solid #999;padding:6px;}td{border:1px solid #999;padding:6px;text-align:center;}.total{background:#0b1a2e;color:#ffffff;font-weight:bold;}</style></head><body>`;
+            let html = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="UTF-8"><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>Боссы</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--><style>table{border-collapse:collapse;font-family:'Segoe UI',sans-serif;font-size:12pt;}th{background:#dce5f0;font-weight:bold;text-align:center;border:1px solid #999;padding:6px;}td{border:1px solid #999;padding:6px;text-align:center;}.total{background:#0b1a2e;color:#ffffff;font-weight:bold;}.total td{color:#ffffff;}</style></head><body>`;
             const headers = ['Босс','Режим','HP','Итоговое HP','Урон на 1 доп. тату','Доп. тату за нападение','Лимит нападений','Урон за нападение','Общий урон','Доп. тату','Тату за победы','Всего тату'];
             html += '<table><thead><tr>';
             headers.forEach(h => html += `<th>${h}</th>`);
             html += '</tr></thead><tbody>';
-            bosses.forEach(boss => {
-                let dmgPerAttack, displayDmg;
-                if (isZmei6(boss)) {
-                    dmgPerAttack = getZmeiThreshold(boss);
-                    const thresholds = BOSSES['Змей'].modes['6'].thresholds;
-                    const idx = Math.min(boss.tatuPerAttack, thresholds.length - 1);
-                    displayDmg = thresholds[idx] || 0;
-                } else {
-                    dmgPerAttack = boss.dmgPerTatu * boss.tatuPerAttack;
-                    displayDmg = boss.dmgPerTatu;
-                }
-                const totalDmg = dmgPerAttack * boss.attackLimit;
-                const extraTatu = boss.tatuPerAttack * boss.attackLimit;
-                const winTatu = boss.attackLimit;
-                const allTatu = extraTatu + winTatu;
-                html += `<tr><td>${boss.name}</td><td>${getModeLabel(boss.mode)}</td><td>${fmt(getHpPerAttack(boss))}</td><td>${fmt(getTotalHp(boss))}</td><td>${fmt(displayDmg)}</td><td>${boss.tatuPerAttack}</td><td>${boss.attackLimit}</td><td>${fmt(dmgPerAttack)}</td><td>${fmt(totalDmg)}</td><td>${fmt(extraTatu)}</td><td>${fmt(winTatu)}</td><td>${fmt(allTatu)}</td></tr>`;
-            });
             let sumHp=0,sumDmg=0,sumExtra=0,sumWin=0,sumAll=0;
             bosses.forEach(boss => {
-                let dmgPerAttack;
-                if (isZmei6(boss)) {
-                    dmgPerAttack = getZmeiThreshold(boss);
-                } else {
-                    dmgPerAttack = boss.dmgPerTatu * boss.tatuPerAttack;
-                }
-                const totalDmg = dmgPerAttack * boss.attackLimit;
-                const extraTatu = boss.tatuPerAttack * boss.attackLimit;
-                const winTatu = boss.attackLimit;
-                const allTatu = extraTatu + winTatu;
+                const { dmgPerAttack, displayDmg, totalDmg, extraTatu, winTatu, allTatu } = calcBossRow(boss);
+                html += `<tr>${xlsText(boss.name)}${xlsText(getModeLabel(boss.mode))}${xlsNum(getHpPerAttack(boss))}${xlsNum(getTotalHp(boss))}${xlsNum(displayDmg)}${xlsNum(boss.tatuPerAttack)}${xlsNum(boss.attackLimit)}${xlsNum(dmgPerAttack)}${xlsNum(totalDmg)}${xlsNum(extraTatu)}${xlsNum(winTatu)}${xlsNum(allTatu)}</tr>`;
                 sumHp += getTotalHp(boss);
                 sumDmg += totalDmg; sumExtra += extraTatu; sumWin += winTatu; sumAll += allTatu;
             });
-            html += `<tr class="total"><td colspan="2">ИТОГО</td><td></td><td>${fmt(sumHp)}</td><td colspan="4"></td><td>${fmt(sumDmg)}</td><td>${fmt(sumExtra)}</td><td>${fmt(sumWin)}</td><td>${fmt(sumAll)}</td></tr>`;
+            html += `<tr class="total"><td colspan="2">ИТОГО</td><td></td>${xlsNum(sumHp)}<td colspan="4"></td>${xlsNum(sumDmg)}${xlsNum(sumExtra)}${xlsNum(sumWin)}${xlsNum(sumAll)}</tr>`;
             html += '</tbody></table></body></html>';
             return html;
         }
 
-        function exportData() {
-            const format = exportFormat.value;
-            let content, filename, mime;
-            if (format === 'tsv') {
-                content = exportTSV();
-                if (!content) return;
-                filename = 'boss_calculator_data.tsv';
-                mime = 'text/tab-separated-values;charset=utf-8';
-            } else {
-                content = exportXLS();
-                if (!content) return;
-                filename = 'boss_calculator_data.xls';
-                mime = 'application/vnd.ms-excel;charset=utf-8';
+        function exportPNG() {
+            const wrap = document.getElementById('tableWrap');
+            if (!wrap) {
+                showToast('⚠️ Не найдена таблица для скриншота');
+                return;
             }
-            const blob = new Blob([content], { type: mime });
+            showToast('⏳ Генерация изображения...');
+            const script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
+            script.onload = function() {
+                html2canvas(wrap, {
+                    scale: 2,
+                    useCORS: true,
+                    allowTaint: true,
+                    backgroundColor: window.getComputedStyle(wrap).backgroundColor || '#ffffff'
+                }).then(canvas => {
+                    const link = document.createElement('a');
+                    link.download = 'boss_table.png';
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                    showToast('✅ PNG сохранён');
+                }).catch(err => {
+                    console.error(err);
+                    showToast('⚠️ Ошибка при создании PNG');
+                });
+            };
+            script.onerror = function() {
+                showToast('⚠️ Не удалось загрузить библиотеку html2canvas');
+            };
+            document.head.appendChild(script);
+        }
+
+        exportBtnExcel.addEventListener('click', function() {
+            const content = exportXLS();
+            if (!content) return;
+            const blob = new Blob([content], { type: 'application/vnd.ms-excel;charset=utf-8' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = filename;
+            a.download = 'boss_calculator_data.xls';
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
-            showToast(`📄 Экспорт в ${format.toUpperCase()} выполнен`);
-        }
-        exportBtn.addEventListener('click', exportData);
+            showToast('📄 Экспорт Excel выполнен');
+        });
+
+        exportBtnPng.addEventListener('click', exportPNG);
 
         function importFromFile(file) {
             const reader = new FileReader();
@@ -1700,7 +1924,6 @@
             }
         });
 
-
         function initCalculator() {
             populateBossSelect();
             const hasData = loadFromLocalStorage();
@@ -1733,16 +1956,61 @@
             updateStats();
         }
         initCalculator();
+
+        // ================================================================
+        // ФУНКЦИЯ ДЛЯ ЗАПОЛНЕНИЯ ФОРМЫ ИЗ ТАБЛИЦЫ БОССОВ
+        // ================================================================
+        window.fillCalculatorFromBoss = function(bossName, modeKey) {
+            // Переключаемся на вкладку "Калькулятор"
+            const calcTab = document.querySelector('.tab-btn[data-tab="calculator"]');
+            if (calcTab) calcTab.click();
+
+            // Устанавливаем босса
+            const bossSelect = document.querySelector('#bossSelect');
+            if (bossSelect) {
+                bossSelect.value = bossName;
+                bossSelect.dispatchEvent(new Event('change'));
+            }
+
+            // После изменения босса, ждём обновления списка режимов, затем выбираем режим
+            setTimeout(() => {
+                const modeSelect = document.querySelector('#modeSelect');
+                if (modeSelect) {
+                    const option = Array.from(modeSelect.options).find(opt => opt.value === modeKey);
+                    if (option) {
+                        modeSelect.value = modeKey;
+                        modeSelect.dispatchEvent(new Event('change'));
+                    } else {
+                        showToast('⚠️ Режим не найден для этого босса');
+                    }
+                }
+            }, 100);
+
+            // После выбора режима, устанавливаем допки на максимум (если есть)
+            setTimeout(() => {
+                const tatuSelect = document.querySelector('#tatuSelect');
+                const maxTatu = parseInt(document.getElementById('displayMaxTatu').textContent) || 0;
+                if (tatuSelect && maxTatu > 0) {
+                    tatuSelect.value = maxTatu;
+                }
+            }, 200);
+
+            // Показываем сообщение с названием режима вместо ключа
+            const modeLabel = window._MODES && window._MODES[modeKey] ? window._MODES[modeKey].label : modeKey;
+            showToast(`✅ Заполнено: ${bossName} - ${modeLabel}`);
+        };
+
     })();
 
     // ================================================================
-    // 5. СКРИПТ СПИСКА БОССОВ (второй файл)
+    // 5. СКРИПТ СПИСКА БОССОВ (второй файл) — с сортировкой по HP внутри категории
+    //     и кнопками экспорта: Excel и PNG, плюс tooltip и клик
     // ================================================================
     (function bossList() {
         'use strict';
 
         const bosses = [
-            // Беспредельщики (21)
+            // Беспредельщики
             { name: "Кирпич",    category: "Беспредельщики", hp: 1000,      modes: ["Пацанский"] },
             { name: "Сизый",     category: "Беспредельщики", hp: 10000,     modes: ["Пацанский", "Блатной", "Авторитетный"] },
             { name: "Махно",     category: "Беспредельщики", hp: 50000,     modes: ["Пацанский", "Блатной", "Авторитетный"] },
@@ -1756,15 +2024,17 @@
             { name: "Гризли",    category: "Беспредельщики", hp: 10000000,  modes: ["Пацанский", "Блатной", "Авторитетный"] },
             { name: "Феня",      category: "Беспредельщики", hp: 15000000,  modes: ["Пацанский", "Блатной", "Авторитетный"] },
             { name: "Север",     category: "Беспредельщики", hp: 20000000,  modes: ["Пацанский", "Блатной", "Авторитетный"] },
+            { name: "Мазай",     category: "Беспредельщики", hp: 25000000,  modes: ["Пацанский", "Блатной", "Авторитетный"] },
             { name: "Хирург",    category: "Беспредельщики", hp: 30000000,  modes: ["Пацанский", "Блатной", "Авторитетный"] },
             { name: "Пресс",     category: "Беспредельщики", hp: 70000000,  modes: ["Пацанский", "Блатной", "Авторитетный"] },
             { name: "Немой",     category: "Беспредельщики", hp: 100000000, modes: ["Пацанский", "Блатной", "Авторитетный", "Воровской"] },
             { name: "Бидон",     category: "Беспредельщики", hp: 300000000, modes: ["Пацанский", "Блатной", "Авторитетный", "Воровской"] },
             { name: "Воркута",   category: "Беспредельщики", hp: 400000000, modes: ["Пацанский", "Блатной", "Авторитетный"] },
+            { name: "Старшой",   category: "Беспредельщики", hp: 600000000, modes: ["Пацанский", "Блатной", "Авторитетный", "Воровской"] },
             { name: "Бугор",     category: "Беспредельщики", hp: 1000000000, modes: ["Пацанский", "Блатной", "Авторитетный", "Воровской"] },
             { name: "Змей",      category: "Беспредельщики", hp: 13000000000, modes: ["Пацанский", "Блатной", "Авторитетный", "Воровской"] },
             { name: "Гвоздь",    category: "Беспредельщики", hp: 25000000000, modes: ["Пацанский", "Блатной", "Авторитетный"] },
-            // Надзиратели (16)
+            // Надзиратели
             { name: "Палыч",     category: "Надзиратели", hp: 100000,    modes: ["Пацанский"] },
             { name: "Циклоп",    category: "Надзиратели", hp: 300000,    modes: ["Пацанский"] },
             { name: "Раиса",     category: "Надзиратели", hp: 300000,    modes: ["Пацанский"] },
@@ -1773,32 +2043,41 @@
             { name: "Близнецы",  category: "Надзиратели", hp: 2000000,   modes: ["Пацанский"] },
             { name: "Борзов",    category: "Надзиратели", hp: 3000000,   modes: ["Пацанский", "Блатной", "Авторитетный"] },
             { name: "Цербер",    category: "Надзиратели", hp: 5000000,   modes: ["Пацанский", "Блатной", "Авторитетный"] },
+            { name: "Ёхан",      category: "Надзиратели", hp: 7000000,   modes: ["Пацанский", "Блатной", "Авторитетный"] },
             { name: "Конвой",    category: "Надзиратели", hp: 10000000,  modes: ["Пацанский", "Блатной", "Авторитетный"] },
             { name: "Бульдозер", category: "Надзиратели", hp: 15000000,  modes: ["Пацанский", "Блатной", "Авторитетный"] },
             { name: "Кусто",     category: "Надзиратели", hp: 20000000,  modes: ["Пацанский", "Блатной", "Авторитетный"] },
             { name: "Фин",       category: "Надзиратели", hp: 30000000,  modes: ["Пацанский", "Блатной", "Авторитетный"] },
             { name: "Дюбель",    category: "Надзиратели", hp: 40000000,  modes: ["Пацанский", "Блатной", "Авторитетный"] },
+            { name: "Дантист",   category: "Надзиратели", hp: 100000000, modes: ["Пацанский", "Блатной", "Авторитетный"] },
             { name: "Чугун",     category: "Надзиратели", hp: 400000000, modes: ["Пацанский", "Блатной", "Авторитетный", "Воровской"] },
             { name: "Кнут",      category: "Надзиратели", hp: 500000000, modes: ["Пацанский", "Блатной", "Авторитетный", "Воровской"] },
             { name: "Крест",     category: "Надзиратели", hp: 5000000000, modes: ["Пацанский", "Блатной", "Авторитетный"] },
-            // Рецидивисты (6) — без Воровского
+            // Рецидивисты
             { name: "Жестянщики", category: "Рецидивисты", hp: 1000000,   modes: ["Пацанский"] },
             { name: "Отбой",      category: "Рецидивисты", hp: 5000000,   modes: ["Пацанский"] },
             { name: "Боцман",     category: "Рецидивисты", hp: 10000000,  modes: ["Пацанский", "Блатной", "Авторитетный"] },
             { name: "Жульбаны",   category: "Рецидивисты", hp: 50000000,  modes: ["Пацанский", "Блатной", "Авторитетный"] },
+            { name: "Чебот",      category: "Рецидивисты", hp: 75000000,  modes: ["Пацанский", "Блатной", "Авторитетный"] },
             { name: "Шнифер",     category: "Рецидивисты", hp: 100000000, modes: ["Пацанский", "Блатной", "Авторитетный"] },
-            { name: "Бивень",     category: "Рецидивисты", hp: 150000000, modes: ["Пацанский", "Блатной", "Авторитетный"] }
+            { name: "Бивень",     category: "Рецидивисты", hp: 150000000, modes: ["Пацанский", "Блатной", "Авторитетный"] },
+            { name: "Контрабас",  category: "Рецидивисты", hp: 200000000, modes: ["Пацанский", "Блатной", "Авторитетный"] }
         ];
+
+        // Достаём данные о допках из глобального BOSSES
+        const BOSSES = window._BOSSES || {};
+        const MODES = window._MODES || {};
 
         function formatNumber(num) {
             return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
         }
 
+        // Новая тепловая карта
         function getHpClass(hp) {
-            if (hp <= 300000) return 'hp-low';
-            if (hp <= 2000000) return 'hp-mid';
-            if (hp <= 100000000) return 'hp-high';
-            return 'hp-vhigh';
+            if (hp <= 5000000) return 'hp-low';      // зелёный
+            if (hp <= 600000000) return 'hp-mid';    // жёлтый
+            if (hp <= 5000000000) return 'hp-high';  // оранжевый
+            return 'hp-vhigh';                       // красный
         }
 
         const modeMultipliers = {
@@ -1806,6 +2085,14 @@
             'Блатной': 3,
             'Авторитетный': 6,
             'Воровской': 12
+        };
+
+        // Маппинг названия режима на его ключ (используется в BOSSES)
+        const modeKeyMap = {
+            'Пацанский': '1',
+            'Блатной': '3',
+            'Авторитетный': '6',
+            'Воровской': '12'
         };
 
         const columnsConfig = {
@@ -1817,7 +2104,8 @@
         const categories = ['Беспредельщики', 'Надзиратели', 'Рецидивисты'];
         const grouped = {};
         categories.forEach(cat => {
-            grouped[cat] = bosses.filter(b => b.category === cat);
+            grouped[cat] = bosses.filter(b => b.category === cat)
+                .sort((a, b) => a.hp - b.hp);
         });
 
         const container = document.getElementById('tab-bosslist');
@@ -1862,14 +2150,46 @@
                 tdName.textContent = boss.name;
                 tr.appendChild(tdName);
 
+                // Для каждого режима в столбцах
                 for (let i = 1; i < columns.length; i++) {
-                    const mode = columns[i];
+                    const modeName = columns[i];
                     const td = document.createElement('td');
                     td.className = 'hp-cell';
-                    if (boss.modes.includes(mode)) {
-                        const hp = boss.hp * modeMultipliers[mode];
+
+                    if (boss.modes.includes(modeName)) {
+                        const hp = boss.hp * modeMultipliers[modeName];
                         td.textContent = formatNumber(hp);
                         td.classList.add(getHpClass(hp));
+
+                        // Проверяем, есть ли доп. награды для этого босса и режима
+                        const modeKey = modeKeyMap[modeName];
+                        const bossData = BOSSES[boss.name];
+                        let hasDop = false;
+                        let dmg = null;
+                        let max = 0;
+                        let thresholds = null;
+                        if (bossData && bossData.modes && bossData.modes[modeKey]) {
+                            const modeData = bossData.modes[modeKey];
+                            if (modeData.dmg !== null && modeData.max > 0) {
+                                hasDop = true;
+                                dmg = modeData.dmg;
+                                max = modeData.max;
+                                thresholds = modeData.thresholds || null;
+                            }
+                        }
+
+                        if (hasDop) {
+                            td.classList.add('has-dop');
+                            td.dataset.boss = boss.name;
+                            td.dataset.mode = modeKey;
+                            td.dataset.hp = hp;
+                            td.dataset.dmg = dmg;
+                            td.dataset.max = max;
+                            if (thresholds) {
+                                td.dataset.thresholds = JSON.stringify(thresholds);
+                            }
+                            td.title = 'Кликните для быстрого заполнения калькулятора';
+                        }
                     } else {
                         td.classList.add('empty');
                         td.textContent = '';
@@ -1891,6 +2211,151 @@
             tablesContainer.appendChild(tableEl);
         });
 
+        // ================================================================
+        // ОБРАБОТЧИКИ TOOLTIP И КЛИКА
+        // ================================================================
+        const tooltip = document.getElementById('bossTooltip');
+        let tooltipTimeout = null;
+        // На тач-устройствах нет hover — награду сначала показываем по тапу,
+        // и только повторный тап по той же ячейке переносит боссов в калькулятор.
+        const isTouchDevice = window.matchMedia('(hover: none)').matches || navigator.maxTouchPoints > 0;
+        let touchActiveCell = null;
+
+        function showTooltip(e, bossName, modeKey, dmg, max, thresholds, targetEl) {
+            const modeLabel = MODES[modeKey] ? MODES[modeKey].label : modeKey;
+            let dopListHtml = '';
+            let maxTotal = 0;
+
+            if (thresholds && thresholds.length > 1) {
+                // Пороговый режим (Змей)
+                const list = [];
+                for (let i = 1; i < thresholds.length; i++) {
+                    const prev = thresholds[i-1];
+                    const cur = thresholds[i];
+                    const dopDmg = cur - prev;
+                    list.push({ num: i, dmg: dopDmg, total: cur });
+                }
+                maxTotal = thresholds[thresholds.length - 1];
+                dopListHtml = list.map(item =>
+                    `<div class="dop-item"><span class="dop-label">${item.num}-я допка:</span><span class="dop-value">${formatNumber(item.total)}</span></div>`
+                ).join('');
+            } else if (dmg && max > 0) {
+                // Обычный режим с одинаковым уроном за каждую допку
+                const list = [];
+                for (let i = 1; i <= max; i++) {
+                    list.push({ num: i, total: dmg * i });
+                }
+                maxTotal = dmg * max;
+                dopListHtml = list.map(item =>
+                    `<div class="dop-item"><span class="dop-label">${item.num}-я допка:</span><span class="dop-value">${formatNumber(item.total)}</span></div>`
+                ).join('');
+            } else {
+                dopListHtml = '<div class="dop-item">Нет данных о допках</div>';
+                maxTotal = 0;
+            }
+
+            tooltip.innerHTML = `
+                <div class="tt-title">${bossName}</div>
+                <div class="tt-mode">${modeLabel}</div>
+                <div class="tt-dop-list">${dopListHtml}</div>
+                ${maxTotal > 0 ? `<div class="tt-max">Максимальный урон: ${formatNumber(maxTotal)}</div>` : ''}
+                <div class="tt-hint">${isTouchDevice ? '👆 Нажмите ещё раз, чтобы заполнить калькулятор' : '🖱 Кликните, чтобы заполнить калькулятор'}</div>
+            `;
+            // Позиционируем
+            const rect = (targetEl || e.target).getBoundingClientRect();
+            let left = rect.left + rect.width / 2 - 140;
+            let top = rect.bottom + 8;
+            if (left < 10) left = 10;
+            if (left + 280 > window.innerWidth) left = window.innerWidth - 290;
+            if (top + 160 > window.innerHeight) top = rect.top - 160;
+            tooltip.style.left = left + 'px';
+            tooltip.style.top = top + 'px';
+            tooltip.classList.add('visible');
+        }
+
+        function hideTooltip() {
+            tooltip.classList.remove('visible');
+        }
+
+        function readCellReward(cell) {
+            const boss = cell.dataset.boss;
+            const mode = cell.dataset.mode;
+            const dmg = parseInt(cell.dataset.dmg);
+            const max = parseInt(cell.dataset.max);
+            let thresholds = null;
+            if (cell.dataset.thresholds) {
+                try { thresholds = JSON.parse(cell.dataset.thresholds); } catch(e) {}
+            }
+            return { boss, mode, dmg, max, thresholds };
+        }
+
+        // Делегирование на таблицах внутри #tab-bosslist
+        const bosslistContainer = document.getElementById('tab-bosslist');
+
+        // Наведение мышью (только для устройств с мышью — на тач-экранах это не используется)
+        bosslistContainer.addEventListener('mouseover', function(e) {
+            if (isTouchDevice) return;
+            const cell = e.target.closest('.hp-cell.has-dop');
+            if (cell) {
+                const { boss, mode, dmg, max, thresholds } = readCellReward(cell);
+                if (boss && mode && !isNaN(dmg) && !isNaN(max)) {
+                    showTooltip(e, boss, mode, dmg, max, thresholds, cell);
+                }
+            } else {
+                hideTooltip();
+            }
+        });
+
+        bosslistContainer.addEventListener('mouseout', function(e) {
+            if (isTouchDevice) return;
+            const related = e.relatedTarget;
+            if (!related || !related.closest('.hp-cell.has-dop')) {
+                hideTooltip();
+            }
+        });
+
+        // Клик / тап по ячейке с допками
+        bosslistContainer.addEventListener('click', function(e) {
+            const cell = e.target.closest('.hp-cell.has-dop');
+
+            if (!cell) {
+                if (isTouchDevice) { hideTooltip(); touchActiveCell = null; }
+                return;
+            }
+
+            if (isTouchDevice) {
+                if (touchActiveCell !== cell) {
+                    // Первый тап — только показываем награду, в калькулятор не переносим
+                    const { boss, mode, dmg, max, thresholds } = readCellReward(cell);
+                    if (boss && mode && !isNaN(dmg) && !isNaN(max)) {
+                        showTooltip(e, boss, mode, dmg, max, thresholds, cell);
+                        touchActiveCell = cell;
+                    }
+                    return;
+                }
+                // Повторный тап по той же ячейке — переносим в калькулятор
+            }
+
+            const boss = cell.dataset.boss;
+            const mode = cell.dataset.mode;
+            if (boss && mode && typeof window.fillCalculatorFromBoss === 'function') {
+                window.fillCalculatorFromBoss(boss, mode);
+                hideTooltip();
+                touchActiveCell = null;
+            } else {
+                showToast('⚠️ Ошибка: функция не найдена');
+            }
+        });
+
+        // Тап вне ячейки с допками — закрываем открытую подсказку
+        document.addEventListener('click', function(e) {
+            if (isTouchDevice && touchActiveCell && !e.target.closest('.hp-cell.has-dop')) {
+                hideTooltip();
+                touchActiveCell = null;
+            }
+        });
+
+        // Экспорт Excel для списка боссов
         document.getElementById('exportBtn2').addEventListener('click', function() {
             let html = `
             <html>
@@ -1953,7 +2418,7 @@
                         if (boss.modes.includes(mode)) {
                             const hp = boss.hp * modeMultipliers[mode];
                             const cls = getHpClass(hp);
-                            html += `<td class="hp-cell ${cls}">${formatNumber(hp)}</td>`;
+                            html += `<td class="hp-cell ${cls}" style="mso-number-format:'#,##0';">${Math.round(hp)}</td>`;
                         } else {
                             html += `<td class="hp-cell empty"></td>`;
                         }
@@ -1978,6 +2443,39 @@
             link.click();
             document.body.removeChild(link);
             URL.revokeObjectURL(url);
+        });
+
+        // Экспорт PNG для списка боссов
+        document.getElementById('exportBtnPng2').addEventListener('click', function() {
+            const wrap = document.getElementById('tablesContainer2');
+            if (!wrap) {
+                showToast('⚠️ Не найдена таблица для скриншота');
+                return;
+            }
+            showToast('⏳ Генерация изображения...');
+            const script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
+            script.onload = function() {
+                html2canvas(wrap, {
+                    scale: 2,
+                    useCORS: true,
+                    allowTaint: true,
+                    backgroundColor: window.getComputedStyle(wrap).backgroundColor || '#ffffff'
+                }).then(canvas => {
+                    const link = document.createElement('a');
+                    link.download = 'bosses_list.png';
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                    showToast('✅ PNG сохранён');
+                }).catch(err => {
+                    console.error(err);
+                    showToast('⚠️ Ошибка при создании PNG');
+                });
+            };
+            script.onerror = function() {
+                showToast('⚠️ Не удалось загрузить библиотеку html2canvas');
+            };
+            document.head.appendChild(script);
         });
 
     })();
