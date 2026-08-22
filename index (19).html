@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5">
+    <meta name="description" content="Калькулятор урона по боссам Dopki.ru: считайте HP, урон и допки, ведите таблицу боссов и сверяйтесь со справочным списком.">
+    <meta property="og:title" content="Dopki.ru — Калькулятор урона по боссам">
+    <meta property="og:description" content="Считайте HP, урон и допки по боссам, ведите свою таблицу и сверяйтесь со справочным списком.">
+    <meta property="og:type" content="website">
+    <meta name="theme-color" content="#121110">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://i.ibb.co; object-src 'none'; base-uri 'self'; form-action 'self'">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23171310'/%3E%3Ctext x='50' y='68' font-size='60' font-family='Segoe UI, Arial, sans-serif' font-weight='700' text-anchor='middle' fill='%23c99a5f'%3ED%3C/text%3E%3C/svg%3E">
+    <title>Боссы — Калькулятор + Список</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+
+    <!-- ===== ШАПКА ===== -->
+    <header class="app-header">
+        <div class="logo-area">
+            <div class="logo-icon">
+                <img src="https://i.ibb.co/rKqF7DgJ/photo-2026-07-01-08-19-36.jpg" alt="Логотип">
+            </div>
+            <div class="logo-text">
+                <span class="title">Dopki.ru</span>
+                <span class="sub">Калькулятор урона по боссам</span>
+            </div>
+        </div>
+        <div class="header-actions">
+            <a href="https://t.me/dopkiru" target="_blank" class="btn-link primary">📢 Канал</a>
+            <a href="https://t.me/dopkicom" target="_blank" class="btn-link primary">💬 Чат</a>
+            <button class="btn-link" id="copyIdBtn" style="font-size:13px;">📋 Мой ID</button>
+            <button class="theme-toggle" id="themeToggle" aria-label="Переключить тему">🌙</button>
+        </div>
+    </header>
+
+    <!-- ===== ВКЛАДКИ ===== -->
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="calculator">📊 Калькулятор</button>
+        <button class="tab-btn" data-tab="bosslist">📋 Список боссов</button>
+    </div>
+
+    <!-- ===== ТАБ 1: КАЛЬКУЛЯТОР ===== -->
+    <div class="tab-content active" id="tab-calculator">
+        <!-- STATS -->
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card"><div class="stat-label">Всего боссов</div><div class="stat-value" id="statBosses">0</div></div>
+            <div class="stat-card accent"><div class="stat-label">Суммарное HP</div><div class="stat-value" id="statTotalHp">0</div></div>
+            <div class="stat-card accent"><div class="stat-label">Общий урон</div><div class="stat-value" id="statTotalDmg">0</div></div>
+            <div class="stat-card"><div class="stat-label">Доп. наград</div><div class="stat-value" id="statExtraTatu">0</div></div>
+            <div class="stat-card accent"><div class="stat-label">Всего тату</div><div class="stat-value" id="statAllTatu">0</div></div>
+        </div>
+
+        <!-- ADD FORM -->
+        <section class="add-section">
+            <div class="add-form-wrap">
+                <form class="add-form-grid" id="addForm" autocomplete="off">
+                    <div class="field-group">
+                        <label for="bossSelect">Босс</label>
+                        <select id="bossSelect"></select>
+                    </div>
+                    <div class="field-group">
+                        <label for="modeSelect">Режим</label>
+                        <select id="modeSelect"></select>
+                    </div>
+                    <div class="field-group">
+                        <label for="tatuSelect">Доп. наград за нападение</label>
+                        <select id="tatuSelect"></select>
+                        <div id="noDopMessage" class="no-dop-message" style="display:none;">⚠️ Нет доп. наград</div>
+                    </div>
+                    <div class="field-group">
+                        <label for="attackLimitInput">Лимит нападений</label>
+                        <input type="number" id="attackLimitInput" value="9" min="1" step="1">
+                    </div>
+                    <div class="form-info-grid" id="formInfoGrid">
+                        <div class="form-info-item"><div class="info-label">HP</div><div class="info-value" id="displayBaseHp">0</div></div>
+                        <div class="form-info-item"><div class="info-label">Урон на допку</div><div class="info-value" id="displayDmgPerTatu">0</div></div>
+                        <div class="form-info-item"><div class="info-label">Максимум допок</div><div class="info-value" id="displayMaxTatu">0</div></div>
+                        <div class="form-info-item danger" id="noDopCard" style="display:none;">
+                            <div class="info-label">Статус</div>
+                            <div class="info-value"><span class="no-dop-badge">❌ Доп. награды отсутствуют</span></div>
+                        </div>
+                    </div>
+                    <div class="add-btn-wrap"><button type="button" class="btn-add" id="addBtn">➕ Добавить босса</button></div>
+                </form>
+            </div>
+        </section>
+
+        <!-- ACTIONS -->
+        <div class="actions-bar">
+            <button class="btn btn-primary" id="exportBtnExcel">📄 Экспорт Excel</button>
+            <button class="btn btn-primary btn-export-png" id="exportBtnPng">🖼 Экспорт PNG</button>
+            <button class="btn btn-primary" id="importBtn">📂 Импорт</button>
+            <button class="btn btn-danger" id="clearBtn">🗑 Очистить всё</button>
+            <button class="btn btn-danger" id="deleteSelectedBtn">🗑 Удалить выбранных</button>
+            <input type="file" id="fileInput" accept=".tsv,.csv,.txt,.xls">
+        </div>
+
+        <!-- TABLE -->
+        <p class="scroll-hint">← Листайте таблицу влево-вправо →</p>
+        <div class="table-wrap" id="tableWrap">
+            <table class="boss-table" id="bossTable">
+                <thead>
+                    <tr>
+                        <th style="width:40px;"><input type="checkbox" id="selectAll" title="Выбрать все"></th>
+                        <th>Босс</th>
+                        <th>Режим</th>
+                        <th>HP</th>
+                        <th>Итоговое HP</th>
+                        <th>Урон на 1 доп. тату</th>
+                        <th>Доп. тату за нападение</th>
+                        <th>Лимит нападений</th>
+                        <th>Урон за нападение</th>
+                        <th>Общий урон</th>
+                        <th>Доп. тату</th>
+                        <th>Тату за победы</th>
+                        <th>Всего тату</th>
+                        <th>Удалить</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+                <tfoot id="tableFoot" style="display:none;">
+                    <tr class="total-row">
+                        <td colspan="3" style="text-align:right; padding-right:16px;"><span class="total-label">ИТОГО:</span></td>
+                        <td></td>
+                        <td id="totalHp">0</td>
+                        <td colspan="4"></td>
+                        <td id="totalDmg">0</td>
+                        <td id="totalExtraTatu">0</td>
+                        <td id="totalWinTatu">0</td>
+                        <td id="totalAllTatu">0</td>
+                        <td></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <!-- EMPTY -->
+        <div id="emptyMessage" class="empty-message">Нет добавленных боссов. Добавьте первого!</div>
+
+        <!-- GUIDE -->
+        <div class="guide">
+            <h3>📖 Как пользоваться калькулятором</h3>
+            <p><strong>1. Добавление босса:</strong> Выберите босса из списка, затем режим. Количество допок выбирается автоматически из доступных вариантов. Если режим не даёт допок, кнопка добавления будет заблокирована.</p>
+            <p><strong>2. Таблица только для просмотра:</strong> Все изменения вносятся через форму добавления вверху. В таблице нельзя редактировать данные напрямую.</p>
+            <p><strong>3. Автосохранение:</strong> Все данные сохраняются в браузере (localStorage) и восстанавливаются при повторном открытии страницы.</p>
+            <p><strong>4. Экспорт:</strong> Кнопки «Экспорт Excel» и «Экспорт PNG» позволяют сохранить таблицу в нужном формате. Для PNG используется библиотека html2canvas (загружается с CDN).</p>
+            <p><strong>5. Импорт:</strong> Нажмите «Импорт» и выберите ранее сохранённый файл (TSV или Excel .xls) — таблица восстановится.</p>
+            <p><strong>6. Очистка:</strong> Кнопка «Очистить всё» удаляет всех боссов и очищает локальное хранилище. Также можно удалить выбранных боссов через чекбоксы и кнопку «Удалить выбранных».</p>
+            <p style="margin-top:8px; color:var(--text-muted); font-size:13px;">ℹ️ Все числа отображаются с разделителями тысяч для удобства чтения.</p>
+        </div>
+    </div>
+
+    <!-- ===== ТАБ 2: СПИСОК БОССОВ ===== -->
+    <div class="tab-content" id="tab-bosslist">
+        <div class="bosslist-actions">
+            <div class="bosslist-search">
+                <input type="text" id="bossSearchInput" placeholder="🔍 Поиск босса по имени…" autocomplete="off">
+            </div>
+            <div class="bosslist-buttons">
+                <button class="btn-export2" id="exportBtn2">⬇ Экспорт в Excel</button>
+                <button class="btn-export-png2" id="exportBtnPng2">🖼 Экспорт PNG</button>
+            </div>
+        </div>
+        <p class="scroll-hint">← Листайте таблицы влево-вправо →</p>
+        <div class="hp-legend">
+            <span class="hp-legend-item"><i class="hp-low"></i>Низкий HP</span>
+            <span class="hp-legend-item"><i class="hp-mid"></i>Средний HP</span>
+            <span class="hp-legend-item"><i class="hp-high"></i>Высокий HP</span>
+            <span class="hp-legend-item"><i class="hp-vhigh"></i>Очень высокий HP</span>
+            <span class="hp-legend-item hp-legend-dop"><i class="has-dop"></i>Есть допки — нажмите на ячейку</span>
+            <label class="hp-legend-toggle" id="dopOnlyToggle">
+                <input type="checkbox" id="dopOnlyCheckbox">Только с допками
+            </label>
+        </div>
+        <div class="tables-grid" id="tablesContainer2">
+            <p style="padding: 20px; text-align: center; width: 100%;">Загрузка...</p>
+        </div>
+    </div>
+
+</div>
+
+<!-- Глобальный toast -->
+<div class="global-toast" id="globalToast"></div>
+
+<!-- Tooltip -->
+<div class="boss-tooltip" id="bossTooltip"></div>
+
+<!-- ===== СКРИПТЫ ===== -->
+<script src="script.js"></script>
+</body>
+</html>

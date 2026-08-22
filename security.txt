@@ -1,0 +1,4 @@
+Contact: https://t.me/dopkicom
+Canonical: https://dopki.ru/.well-known/security.txt
+Preferred-Languages: ru
+Expires: 2027-08-22T00:00:00.000Z
