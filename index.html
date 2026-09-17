@@ -7,10 +7,12 @@
     <meta property="og:title" content="Dopki.ru — Калькулятор урона по боссам">
     <meta property="og:description" content="Считайте HP, урон и допки по боссам, ведите свою таблицу и сверяйтесь со справочным списком.">
     <meta property="og:type" content="website">
+    <meta property="og:image" content="https://dopki.ru/favicon.png">
     <meta name="theme-color" content="#121110">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://i.ibb.co; object-src 'none'; base-uri 'self'; form-action 'self'">
     <meta name="referrer" content="strict-origin-when-cross-origin">
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23171310'/%3E%3Ctext x='50' y='68' font-size='60' font-family='Segoe UI, Arial, sans-serif' font-weight='700' text-anchor='middle' fill='%23c99a5f'%3ED%3C/text%3E%3C/svg%3E">
+    <link rel="icon" href="favicon.png" type="image/png">
+    <link rel="apple-touch-icon" href="favicon.png">
     <title>Боссы — Калькулятор + Список</title>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -72,7 +74,7 @@
                     </div>
                     <div class="field-group">
                         <label for="attackLimitInput">Лимит нападений</label>
-                        <input type="number" id="attackLimitInput" value="9" min="1" step="1">
+                        <input type="number" id="attackLimitInput" value="9" min="1" max="10" step="1">
                     </div>
                     <div class="form-info-grid" id="formInfoGrid">
                         <div class="form-info-item"><div class="info-label">HP</div><div class="info-value" id="displayBaseHp">0</div></div>
