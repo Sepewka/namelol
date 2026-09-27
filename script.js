@@ -1368,46 +1368,56 @@
 
         // ============================================================
         // ЭКСПОРТ EXCEL ДЛЯ СПИСКА БОССОВ
-        // Между таблицами вставляются пустые ячейки-спейсеры, чтобы в
-        // Excel/Google Sheets блоки не слипались (padding ячеек Excel
-        // при импорте HTML часто игнорирует, а отдельная ячейка — нет).
+        // Категории идут друг под другом (вертикально), у каждой —
+        // чёрная шапка с белым текстом, как на референсе. Жёлтым
+        // подсвечиваются только ячейки с допками.
         // ============================================================
         document.getElementById('exportBtn2').addEventListener('click', function() {
-            const catStyle = {
-                'Беспредельщики': { bg: '#221c15', fg: '#ffffff' },
-                'Надзиратели':    { bg: '#b3261e', fg: '#ffffff' },
-                'Рецидивисты':    { bg: '#96721a', fg: '#ffffff' }
-            };
-            const hpBg = { 'hp-low': '#e6f4e6', 'hp-mid': '#fff9e6', 'hp-high': '#ffede0', 'hp-vhigh': '#fce4e4' };
-            const hpFg = { 'hp-low': '#2e7d32', 'hp-mid': '#a06a00', 'hp-high': '#c4551a', 'hp-vhigh': '#c0392b' };
             const DOP_BG = '#ffc107';
             const DOP_FG = '#1a1a1a';
 
             let html = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="UTF-8">` +
                 `<!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>Список боссов</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->` +
-                `<style>
-                    table.boss-cat { border-collapse: collapse; font-family:'Segoe UI',sans-serif; font-size: 11pt; }
-                    table.boss-cat td, table.boss-cat th { border:1px solid #999; padding:5px 8px; text-align:center; }
-                </style></head><body>`;
+                `</head><body>`;
 
-            const catBlocks = [];
-            categories.forEach(cat => {
+            html += `<table style="border-collapse:collapse;font-family:'Segoe UI',sans-serif;font-size:11pt;">`;
+
+            // водяной знак сверху
+            const maxCols = Math.max(...categories.map(c => (columnsConfig[c] || []).length));
+            html += xlsWatermarkRow(maxCols, 'Жёлтая заливка — в этом режиме можно пробить доп. награды (допки).');
+
+            categories.forEach((cat, catIdx) => {
                 const list = grouped[cat] || [];
                 if (list.length === 0) return;
                 const columns = columnsConfig[cat] || ['Босс', 'Пацанский', 'Блатной', 'Авторитетный'];
-                const cs = catStyle[cat] || { bg: '#444', fg: '#fff' };
 
-                let block = `<table class="boss-cat"><tr><th colspan="${columns.length}" style="background:${cs.bg};color:${cs.fg};font-size:13pt;text-align:left;padding:8px 10px;">${cat} (${list.length})</th></tr>`;
-                block += `<tr>${columns.map(col => `<th style="background:#e9ecef;">${col}</th>`).join('')}</tr>`;
+                // отступ между категориями
+                if (catIdx > 0) {
+                    html += `<tr><td colspan="${maxCols}" style="border:none;height:18px;"></td></tr>`;
+                }
 
+                // заголовок категории
+                html += `<tr><td colspan="${columns.length}" style="border:none;text-align:left;font-size:15pt;font-weight:700;color:#000;padding:6px 0 4px;">${cat} (${list.length})</td></tr>`;
+
+                // чёрная шапка
+                html += `<tr>`;
+                columns.forEach(col => {
+                    html += `<th style="background:#000000;color:#ffffff;border:1px solid #000000;padding:6px 10px;text-align:center;font-weight:700;font-size:11pt;">${col}</th>`;
+                });
+                html += `</tr>`;
+
+                // строки
                 list.forEach((boss, rowIdx) => {
-                    const rowBg = rowIdx % 2 === 1 ? '#f6f4ee' : '#ffffff';
-                    block += `<tr><td style="background:${rowBg};text-align:left;font-weight:600;">${boss.name}</td>`;
+                    const rowBg = rowIdx % 2 === 1 ? '#f7f7f7' : '#ffffff';
+                    const borderCol = '#e0e0e0';
+
+                    html += `<tr>`;
+                    html += `<td style="background:${rowBg};border:1px solid ${borderCol};padding:4px 8px;text-align:center;font-weight:600;">${boss.name}</td>`;
+
                     for (let i = 1; i < columns.length; i++) {
                         const mode = columns[i];
                         if (boss.modes.includes(mode)) {
                             const hp = boss.hp * modeMultipliers[mode];
-                            const cls = getHpClass(hp);
                             const modeKey = modeKeyMap[mode];
                             const bossData = BOSSES[boss.name];
                             let hasDop = false;
@@ -1415,37 +1425,19 @@
                                 const modeData = bossData.modes[modeKey];
                                 hasDop = modeData.dmg !== null && modeData.max > 0;
                             }
-                            const cellBg = hasDop ? DOP_BG : hpBg[cls];
-                            const cellFg = hasDop ? DOP_FG : hpFg[cls];
-                            const cellBold = hasDop || cls === 'hp-vhigh';
-                            block += `<td style="background:${cellBg};color:${cellFg};font-weight:${cellBold ? 'bold' : 'normal'};mso-number-format:'#,##0';">${Math.round(hp)}</td>`;
+                            const cellBg = hasDop ? DOP_BG : rowBg;
+                            const cellFg = hasDop ? DOP_FG : '#000000';
+                            const cellBold = hasDop ? 'bold' : 'normal';
+                            html += `<td style="background:${cellBg};color:${cellFg};border:1px solid ${borderCol};padding:4px 8px;text-align:center;font-weight:${cellBold};mso-number-format:'#,##0';">${Math.round(hp)}</td>`;
                         } else {
-                            block += `<td style="background:${rowBg};"></td>`;
+                            html += `<td style="background:${rowBg};border:1px solid ${borderCol};padding:4px 8px;">&nbsp;</td>`;
                         }
                     }
-                    block += `</tr>`;
+                    html += `</tr>`;
                 });
-                block += `</table>`;
-                catBlocks.push(block);
             });
 
-            // Пустые td-ячейки-спейсеры между таблицами — гарантированный отступ
-            // в Excel/Google Sheets (в отличие от padding, который игнорируется).
-            const outerCells = [];
-            catBlocks.forEach((block, i) => {
-                outerCells.push(`<td style="border:none;vertical-align:top;padding:0;">${block}</td>`);
-                if (i < catBlocks.length - 1) {
-                    outerCells.push(`<td style="border:none;background:#ffffff;width:30px;min-width:30px;">&nbsp;</td>`);
-                }
-            });
-            const totalCols = catBlocks.length * 2 - 1;
-
-            html += `<table style="border-collapse:collapse;">` +
-                xlsWatermarkRow(totalCols, 'Жёлтая заливка — в этом режиме можно пробить доп. награды (допки).') +
-                `<tr>${outerCells.join('')}</tr>` +
-                `</table>`;
-
-            html += `</body></html>`;
+            html += `</table></body></html>`;
 
             const blob = new Blob([html], { type: 'application/vnd.ms-excel;charset=utf-8' });
             const link = document.createElement('a');
