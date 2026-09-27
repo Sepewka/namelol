@@ -13,8 +13,6 @@
         }, 2500);
     }
 
-    // Сплошной цвет фона темы для PNG-экспорта — карточки полупрозрачные
-    // (glass-эффект), поэтому их computed backgroundColor не годится для canvas.
     function getExportBgColor() {
         const val = getComputedStyle(document.documentElement).getPropertyValue('--bg-gradient-2').trim();
         return val || '#ffffff';
@@ -22,8 +20,6 @@
 
     const EXPORT_WATERMARK_TEXT = 'by Пекарь · dopki.ru';
 
-    // Временно добавляет водяной знак в угол контейнера перед html2canvas-снимком.
-    // Возвращает функцию для удаления знака после того, как канвас отрисован.
     function addPngWatermark(wrap) {
         const hadInlinePosition = wrap.style.position;
         if (getComputedStyle(wrap).position === 'static') {
@@ -41,9 +37,6 @@
         };
     }
 
-    // Строка водяного знака для HTML/Excel-экспортов. Google Таблицы (в отличие
-    // от Excel) не умеют в свободные <p> вне таблицы — весь текст обязательно
-    // должен лежать внутри <tr>/<td>, иначе он слипается в одну ячейку.
     function xlsWatermarkRow(colspan, extraNote) {
         const text = extraNote ? `${extraNote} &nbsp;&middot;&nbsp; ${EXPORT_WATERMARK_TEXT}` : EXPORT_WATERMARK_TEXT;
         return `<tr><td colspan="${colspan}" style="border:none;text-align:${extraNote ? 'left' : 'right'};font-family:'Segoe UI',sans-serif;font-size:8pt;color:#999;padding:2px 4px 8px;">${text}</td></tr>`;
@@ -63,7 +56,7 @@
     });
 
     // ================================================================
-    // 2. ПЕРЕКЛЮЧАТЕЛЬ ТЕМЫ (общий)
+    // 2. ПЕРЕКЛЮЧАТЕЛЬ ТЕМЫ
     // ================================================================
     function getTheme() { return document.documentElement.getAttribute('data-theme') || 'light'; }
     function setTheme(theme) {
@@ -113,7 +106,7 @@
     }
 
     // ================================================================
-    // 4. СКРИПТ КАЛЬКУЛЯТОРА
+    // 4. КАЛЬКУЛЯТОР
     // ================================================================
     (function calculator() {
         'use strict';
@@ -215,7 +208,6 @@
                     '12': { dmg: 90000000, max: 2 }
                 }
             },
-            // Боссы без допок
             'Мазай': {
                 hp: 25000000,
                 modes: {
@@ -240,7 +232,6 @@
                     '6': { dmg: null, max: 0 }
                 }
             },
-            // Боссы с допками
             'Старшой': {
                 hp: 600000000,
                 modes: {
@@ -316,7 +307,6 @@
             }
         };
 
-        // Делаем BOSSES доступным глобально для tooltip
         window._BOSSES = BOSSES;
         window._MODES = MODES;
 
@@ -783,23 +773,6 @@
             return false;
         }
 
-        function exportTSV() {
-            if (bosses.length === 0) { showToast('⚠️ Нет данных для экспорта'); return null; }
-            let header = ['Босс','Режим','HP','Итоговое HP','Урон на 1 доп. тату','Доп. тату за нападение','Лимит нападений','Урон за нападение','Общий урон','Доп. тату','Тату за победы','Всего тату'];
-            let rows = [];
-            let sumHp=0,sumDmg=0,sumExtra=0,sumWin=0,sumAll=0;
-            bosses.forEach(boss => {
-                const { dmgPerAttack, displayDmg, totalDmg, extraTatu, winTatu, allTatu } = calcBossRow(boss);
-                rows.push([boss.name, getModeLabel(boss.mode), getHpPerAttack(boss), getTotalHp(boss), displayDmg, boss.tatuPerAttack, boss.attackLimit, dmgPerAttack, totalDmg, extraTatu, winTatu, allTatu]);
-                sumHp += getTotalHp(boss);
-                sumDmg += totalDmg; sumExtra += extraTatu; sumWin += winTatu; sumAll += allTatu;
-            });
-            rows.push(['ИТОГО','','',sumHp,'','','','',sumDmg,sumExtra,sumWin,sumAll]);
-            let tsv = header.join('\t') + '\n';
-            rows.forEach(row => tsv += row.join('\t') + '\n');
-            return tsv;
-        }
-
         function xlsNum(n) {
             const val = Math.round(n) || 0;
             return `<td style="mso-number-format:'#,##0';text-align:right;">${val}</td>`;
@@ -979,9 +952,6 @@
         }
         initCalculator();
 
-        // ================================================================
-        // ФУНКЦИЯ ДЛЯ ЗАПОЛНЕНИЯ ФОРМЫ ИЗ ТАБЛИЦЫ БОССОВ
-        // ================================================================
         window.fillCalculatorFromBoss = function(bossName, modeKey) {
             const calcTab = document.querySelector('.tab-btn[data-tab="calculator"]');
             if (calcTab) calcTab.click();
@@ -1020,13 +990,12 @@
     })();
 
     // ================================================================
-    // 5. СКРИПТ СПИСКА БОССОВ
+    // 5. СПИСОК БОССОВ
     // ================================================================
     (function bossList() {
         'use strict';
 
         const bosses = [
-            // Беспредельщики
             { name: "Кирпич",    category: "Беспредельщики", hp: 1000,      modes: ["Пацанский"] },
             { name: "Сизый",     category: "Беспредельщики", hp: 10000,     modes: ["Пацанский", "Блатной", "Авторитетный"] },
             { name: "Махно",     category: "Беспредельщики", hp: 50000,     modes: ["Пацанский", "Блатной", "Авторитетный"] },
@@ -1051,7 +1020,6 @@
             { name: "Змей",      category: "Беспредельщики", hp: 13000000000, modes: ["Пацанский", "Блатной", "Авторитетный", "Воровской"] },
             { name: "Гвоздь",    category: "Беспредельщики", hp: 25000000000, modes: ["Пацанский", "Блатной", "Авторитетный"] },
             { name: "Полтос",    category: "Беспредельщики", hp: 950000000,  modes: ["Пацанский", "Блатной", "Авторитетный", "Воровской"] },
-            // Надзиратели
             { name: "Палыч",     category: "Надзиратели", hp: 100000,    modes: ["Пацанский"] },
             { name: "Циклоп",    category: "Надзиратели", hp: 300000,    modes: ["Пацанский"] },
             { name: "Раиса",     category: "Надзиратели", hp: 300000,    modes: ["Пацанский"] },
@@ -1072,7 +1040,6 @@
             { name: "Сыч",       category: "Надзиратели", hp: 1000000000,  modes: ["Пацанский", "Блатной", "Авторитетный", "Воровской", "Бригадный"] },
             { name: "Крест",     category: "Надзиратели", hp: 5000000000, modes: ["Пацанский", "Блатной", "Авторитетный"] },
             { name: "Гром",      category: "Надзиратели", hp: 70000000000, modes: ["Пацанский", "Блатной", "Авторитетный"] },
-            // Рецидивисты
             { name: "Жестянщики", category: "Рецидивисты", hp: 1000000,   modes: ["Пацанский"] },
             { name: "Отбой",      category: "Рецидивисты", hp: 5000000,   modes: ["Пацанский"] },
             { name: "Боцман",     category: "Рецидивисты", hp: 10000000,  modes: ["Пацанский", "Блатной", "Авторитетный"] },
@@ -1234,9 +1201,6 @@
             tablesContainer.appendChild(tableEl);
         });
 
-        // ================================================================
-        // ПОИСК ПО ИМЕНИ + ФИЛЬТР "ТОЛЬКО С ДОПКАМИ"
-        // ================================================================
         const bossSearchInput = document.getElementById('bossSearchInput');
         const dopOnlyCheckbox = document.getElementById('dopOnlyCheckbox');
         const dopOnlyToggle = document.getElementById('dopOnlyToggle');
@@ -1272,9 +1236,6 @@
         if (bossSearchInput) bossSearchInput.addEventListener('input', applyFilters);
         if (dopOnlyCheckbox) dopOnlyCheckbox.addEventListener('change', applyFilters);
 
-        // ================================================================
-        // ОБРАБОТЧИКИ TOOLTIP И КЛИКА
-        // ================================================================
         const tooltip = document.getElementById('bossTooltip');
         let tooltipTimeout = null;
         const isTouchDevice = window.matchMedia('(hover: none)').matches || navigator.maxTouchPoints > 0;
@@ -1405,7 +1366,12 @@
             }
         });
 
-        // Экспорт Excel для списка боссов
+        // ============================================================
+        // ЭКСПОРТ EXCEL ДЛЯ СПИСКА БОССОВ
+        // Между таблицами вставляются пустые ячейки-спейсеры, чтобы в
+        // Excel/Google Sheets блоки не слипались (padding ячеек Excel
+        // при импорте HTML часто игнорирует, а отдельная ячейка — нет).
+        // ============================================================
         document.getElementById('exportBtn2').addEventListener('click', function() {
             const catStyle = {
                 'Беспредельщики': { bg: '#221c15', fg: '#ffffff' },
@@ -1463,11 +1429,21 @@
                 catBlocks.push(block);
             });
 
+            // Пустые td-ячейки-спейсеры между таблицами — гарантированный отступ
+            // в Excel/Google Sheets (в отличие от padding, который игнорируется).
+            const outerCells = [];
+            catBlocks.forEach((block, i) => {
+                outerCells.push(`<td style="border:none;vertical-align:top;padding:0;">${block}</td>`);
+                if (i < catBlocks.length - 1) {
+                    outerCells.push(`<td style="border:none;background:#ffffff;width:30px;min-width:30px;">&nbsp;</td>`);
+                }
+            });
+            const totalCols = catBlocks.length * 2 - 1;
+
             html += `<table style="border-collapse:collapse;">` +
-                xlsWatermarkRow(catBlocks.length, 'Жёлтая заливка — в этом режиме можно пробить доп. награды (допки).') +
-                `<tr>` +
-                catBlocks.map((block, i) => `<td style="border:none;vertical-align:top;padding:0 ${i < catBlocks.length - 1 ? 16 : 0}px 0 0;">${block}</td>`).join('') +
-                `</tr></table>`;
+                xlsWatermarkRow(totalCols, 'Жёлтая заливка — в этом режиме можно пробить доп. награды (допки).') +
+                `<tr>${outerCells.join('')}</tr>` +
+                `</table>`;
 
             html += `</body></html>`;
 
@@ -1483,7 +1459,6 @@
             showToast('📄 Экспорт Excel выполнен');
         });
 
-        // Экспорт PNG для списка боссов
         document.getElementById('exportBtnPng2').addEventListener('click', function() {
             const wrap = document.getElementById('tablesContainer2');
             if (!wrap) {
