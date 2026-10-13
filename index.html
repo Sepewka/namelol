@@ -55,6 +55,7 @@
             <div class="stat-card accent"><div class="stat-label">Общий урон</div><div class="stat-value" id="statTotalDmg">0</div></div>
             <div class="stat-card"><div class="stat-label">Доп. наград</div><div class="stat-value" id="statExtraTatu">0</div></div>
             <div class="stat-card accent"><div class="stat-label">Всего тату</div><div class="stat-value" id="statAllTatu">0</div></div>
+            <div class="stat-card accent"><div class="stat-label">🎁 Очки баула</div><div class="stat-value" id="statBaulPts">0</div></div>
         </div>
 
         <!-- ADD FORM -->
@@ -82,6 +83,7 @@
                         <div class="form-info-item"><div class="info-label">HP</div><div class="info-value" id="displayBaseHp">0</div></div>
                         <div class="form-info-item"><div class="info-label">Урон на допку</div><div class="info-value" id="displayDmgPerTatu">0</div></div>
                         <div class="form-info-item"><div class="info-label">Максимум допок</div><div class="info-value" id="displayMaxTatu">0</div></div>
+                        <div class="form-info-item" id="baulPtsCard"><div class="info-label">🎁 Баул за 1 победу</div><div class="info-value" id="displayBaulPts">0</div></div>
                         <div class="form-info-item danger" id="noDopCard" style="display:none;">
                             <div class="info-label">Статус</div>
                             <div class="info-value"><span class="no-dop-badge">❌ Доп. награды отсутствуют</span></div>
@@ -121,6 +123,7 @@
                         <th>Доп. тату</th>
                         <th>Тату за победы</th>
                         <th>Всего тату</th>
+                        <th>🎁 Баул</th>
                         <th>Удалить</th>
                     </tr>
                 </thead>
@@ -135,6 +138,7 @@
                         <td id="totalExtraTatu">0</td>
                         <td id="totalWinTatu">0</td>
                         <td id="totalAllTatu">0</td>
+                        <td id="totalBaulPts">0</td>
                         <td></td>
                     </tr>
                 </tfoot>
@@ -143,6 +147,33 @@
 
         <!-- EMPTY -->
         <div id="emptyMessage" class="empty-message">Нет добавленных боссов. Добавьте первого!</div>
+
+        <!-- СБОР БАУЛОВ -->
+        <div class="baul-collect" id="baulCollect" style="display:none;">
+            <div class="baul-collect-title">🎁 Сбор баулов</div>
+            <div class="baul-collect-body">
+                <div class="baul-collect-select">
+                    <label for="baulLevel">Собираю баулы на уровне</label>
+                    <select id="baulLevel"></select>
+                </div>
+                <div class="baul-collect-stats">
+                    <div class="baul-stat">
+                        <div class="baul-stat-lbl">Получишь баулов</div>
+                        <div class="baul-stat-val big" id="baulCount">0</div>
+                        <div class="baul-stat-sub" id="baulCountSub">уровня 30</div>
+                    </div>
+                    <div class="baul-stat">
+                        <div class="baul-stat-lbl">Стоимость 1 баула</div>
+                        <div class="baul-stat-val" id="baulCost">338 375</div>
+                    </div>
+                    <div class="baul-stat">
+                        <div class="baul-stat-lbl">Остаток очков</div>
+                        <div class="baul-stat-val" id="baulRemain">0</div>
+                        <div class="baul-stat-sub" id="baulRemainSub">—</div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- GUIDE -->
         <div class="guide">
@@ -153,6 +184,7 @@
             <p><strong>4. Экспорт:</strong> Кнопки «Экспорт Excel» и «Экспорт PNG» позволяют сохранить таблицу в нужном формате. Для PNG используется библиотека html2canvas (загружается с CDN).</p>
             <p><strong>5. Импорт:</strong> Нажмите «Импорт» и выберите ранее сохранённый файл (TSV или Excel .xls) — таблица восстановится.</p>
             <p><strong>6. Очистка:</strong> Кнопка «Очистить всё» удаляет всех боссов и очищает локальное хранилище. Также можно удалить выбранных боссов через чекбоксы и кнопку «Удалить выбранных».</p>
+            <p><strong>7. 🎁 Баул:</strong> Каждый босс даёт очки баула за победу. Очки × Лимит нападений = суммарный вклад босса. Ниже таблицы — блок «Сбор баулов», где можно выбрать уровень и увидеть, сколько баулов этого уровня получится с текущего набора.</p>
             <p style="margin-top:8px; color:var(--text-muted); font-size:13px;">ℹ️ Все числа отображаются с разделителями тысяч для удобства чтения.</p>
         </div>
     </div>
