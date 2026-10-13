@@ -151,27 +151,21 @@
         <!-- СБОР БАУЛОВ -->
         <div class="baul-collect" id="baulCollect" style="display:none;">
             <div class="baul-collect-title">🎁 Сбор баулов</div>
-            <div class="baul-collect-body">
-                <div class="baul-collect-select">
-                    <label for="baulLevel">Собираю баулы на уровне</label>
-                    <select id="baulLevel"></select>
-                </div>
-                <div class="baul-collect-stats">
-                    <div class="baul-stat">
-                        <div class="baul-stat-lbl">Получишь баулов</div>
-                        <div class="baul-stat-val big" id="baulCount">0</div>
-                        <div class="baul-stat-sub" id="baulCountSub">уровня 30</div>
-                    </div>
-                    <div class="baul-stat">
-                        <div class="baul-stat-lbl">Стоимость 1 баула</div>
-                        <div class="baul-stat-val" id="baulCost">338 375</div>
-                    </div>
-                    <div class="baul-stat">
-                        <div class="baul-stat-lbl">Остаток очков</div>
-                        <div class="baul-stat-val" id="baulRemain">0</div>
-                        <div class="baul-stat-sub" id="baulRemainSub">—</div>
-                    </div>
-                </div>
+
+            <div class="baul-collect-hero">
+                <span class="baul-hero-num" id="baulCount">0</span>
+                <span class="baul-hero-word" id="baulCountSub">баулов 30 lvl</span>
+            </div>
+
+            <div class="baul-collect-row">
+                <label for="baulLevel" class="baul-row-label">Собираю на уровне:</label>
+                <select id="baulLevel" class="baul-row-select"></select>
+            </div>
+
+            <div class="baul-collect-meta">
+                <span class="baul-meta-item">💰 <b id="baulCost">338 375</b> очк. за 1 баул</span>
+                <span class="baul-meta-item">📊 Остаток: <b id="baulRemain">0</b></span>
+                <span class="baul-meta-hint" id="baulRemainSub">—</span>
             </div>
         </div>
 
@@ -184,7 +178,7 @@
             <p><strong>4. Экспорт:</strong> Кнопки «Экспорт Excel» и «Экспорт PNG» позволяют сохранить таблицу в нужном формате. Для PNG используется библиотека html2canvas (загружается с CDN).</p>
             <p><strong>5. Импорт:</strong> Нажмите «Импорт» и выберите ранее сохранённый файл (TSV или Excel .xls) — таблица восстановится.</p>
             <p><strong>6. Очистка:</strong> Кнопка «Очистить всё» удаляет всех боссов и очищает локальное хранилище. Также можно удалить выбранных боссов через чекбоксы и кнопку «Удалить выбранных».</p>
-            <p><strong>7. 🎁 Баул:</strong> Каждый босс даёт очки баула за победу. Очки × Лимит нападений = суммарный вклад босса. Ниже таблицы — блок «Сбор баулов», где можно выбрать уровень и увидеть, сколько баулов этого уровня получится с текущего набора.</p>
+            <p><strong>7. 🎁 Баул:</strong> Каждый босс даёт очки баула за победу. Очки × Лимит нападений = суммарный вклад босса. Ниже таблицы — блок «Сбор баулов»: сверху видно, сколько баулов получишь, ниже можно выбрать уровень сбора.</p>
             <p style="margin-top:8px; color:var(--text-muted); font-size:13px;">ℹ️ Все числа отображаются с разделителями тысяч для удобства чтения.</p>
         </div>
     </div>
