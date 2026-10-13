@@ -378,7 +378,7 @@
             width: 100%;
             border-collapse: collapse;
             font-size: 13px;
-            min-width: 1150px;
+            min-width: 1230px;
             background: var(--bg-card);
             transition: background var(--transition);
         }
@@ -906,7 +906,7 @@
             #tab-calculator .stat-card .stat-value { font-size: clamp(13px, 4.4vw, 20px); }
             #tab-calculator .actions-bar { flex-direction:column; align-items:stretch; }
             #tab-calculator .actions-bar .btn { justify-content:center; width:100%; }
-            #tab-calculator table.boss-table { font-size:11px; min-width:820px; }
+            #tab-calculator table.boss-table { font-size:11px; min-width:880px; }
             #tab-calculator table.boss-table th, #tab-calculator table.boss-table td { padding:8px 6px; }
             #tab-calculator table.boss-table th:first-child,
             #tab-calculator table.boss-table td:first-child {
@@ -941,7 +941,7 @@
             #tab-calculator .form-info-grid { grid-template-columns:1fr 1fr; }
             #tab-calculator .form-info-item .info-value { font-size:15px; }
             #tab-calculator .add-form-wrap { padding:16px; }
-            #tab-calculator table.boss-table { font-size:10px; min-width:700px; }
+            #tab-calculator table.boss-table { font-size:10px; min-width:760px; }
             #tab-calculator .guide p, #tab-calculator .guide ul { font-size:13px; }
             #tab-bosslist table { font-size: 11px; min-width: 270px; }
             #tab-bosslist .col-boss { min-width: 68px; }
@@ -959,7 +959,6 @@
            ПОДПИСЬ "by Пекарь" И БЕЙДЖ "сайт от Пекаря" В ШАПКЕ
            ============================================================ */
 
-        /* Тонкая подпись под логотипом */
         .logo-text .byline {
             font-size: 11px;
             font-weight: 600;
@@ -969,7 +968,6 @@
             opacity: 0.85;
         }
 
-        /* Пилюля рядом с кнопками «Канал» / «Чат» / «Мой ID» */
         .header-actions .header-byline {
             font-size: 11px;
             font-weight: 600;
@@ -984,4 +982,94 @@
         @media (max-width: 480px) {
             .logo-text .byline { font-size: 10px; }
             .header-actions .header-byline { font-size: 10px; padding: 3px 9px; }
+        }
+
+        /* ============================================================
+           СБОР БАУЛОВ (под таблицей калькулятора)
+           ============================================================ */
+        #tab-calculator .baul-collect {
+            margin-bottom: 18px;
+            padding: 18px 22px;
+            background: var(--glass-bg-strong);
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+            border: 1px solid var(--glass-border);
+            border-left: 4px solid var(--accent-light);
+            border-radius: var(--radius-card);
+            box-shadow: var(--shadow-card);
+        }
+        #tab-calculator .baul-collect-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 14px;
+            letter-spacing: 0.2px;
+        }
+        #tab-calculator .baul-collect-body {
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            gap: 24px;
+            align-items: center;
+        }
+        @media (max-width: 768px) {
+            #tab-calculator .baul-collect-body { grid-template-columns: 1fr; gap: 14px; }
+        }
+        #tab-calculator .baul-collect-select label {
+            display: block;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+        #tab-calculator .baul-collect-select select {
+            width: 100%;
+            padding: 11px 14px;
+            border: 2px solid var(--border-input);
+            border-radius: var(--radius-input);
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-primary);
+            background: var(--bg-input);
+            outline: none;
+            cursor: pointer;
+            transition: border-color var(--transition), box-shadow var(--transition);
+        }
+        #tab-calculator .baul-collect-select select:focus {
+            border-color: var(--text-link);
+            box-shadow: 0 0 0 4px var(--accent-glow);
+        }
+        #tab-calculator .baul-collect-stats {
+            display: flex;
+            gap: 28px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        #tab-calculator .baul-stat {
+            min-width: 120px;
+        }
+        #tab-calculator .baul-stat-lbl {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+        #tab-calculator .baul-stat-val {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-primary);
+            font-variant-numeric: tabular-nums;
+            line-height: 1.1;
+        }
+        #tab-calculator .baul-stat-val.big {
+            font-size: 40px;
+            color: var(--accent-light);
+        }
+        #tab-calculator .baul-stat-sub {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 2px;
         }
