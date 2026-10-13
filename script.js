@@ -122,6 +122,7 @@
         const BOSSES = {
             'Бугор': {
                 hp: 1000000000,
+                baulPts: 10000,
                 modes: {
                     '0':  { dmg: 10000000, max: 2 },
                     '1':  { dmg: 10000000, max: 2 },
@@ -132,6 +133,7 @@
             },
             'Немой': {
                 hp: 100000000,
+                baulPts: 1000,
                 modes: {
                     '1': { dmg: 6000000, max: 2 },
                     '3': { dmg: 7200000, max: 2 },
@@ -141,6 +143,7 @@
             },
             'Бидон': {
                 hp: 300000000,
+                baulPts: 3000,
                 modes: {
                     '1': { dmg: null, max: 0 },
                     '3': { dmg: 7500000, max: 2 },
@@ -150,6 +153,7 @@
             },
             'Змей': {
                 hp: 13000000000,
+                baulPts: 130000,
                 modes: {
                     '1': { dmg: 27500000, max: 2 },
                     '3': { dmg: null, max: 0 },
@@ -163,6 +167,7 @@
             },
             'Чугун': {
                 hp: 400000000,
+                baulPts: 4000,
                 modes: {
                     '0':  { dmg: 12000000, max: 1 },
                     '1':  { dmg: 12000000, max: 2 },
@@ -173,6 +178,7 @@
             },
             'Кнут': {
                 hp: 500000000,
+                baulPts: 5000,
                 modes: {
                     '0':  { dmg: 15000000, max: 1 },
                     '1':  { dmg: 15000000, max: 2 },
@@ -183,6 +189,7 @@
             },
             'Крест': {
                 hp: 5000000000,
+                baulPts: 50000,
                 modes: {
                     '1': { dmg: 23000000, max: 2 },
                     '3': { dmg: null, max: 0 },
@@ -192,6 +199,7 @@
             },
             'Гвоздь': {
                 hp: 25000000000,
+                baulPts: 250000,
                 modes: {
                     '1': { dmg: null, max: 0 },
                     '3': { dmg: 50000000, max: 3 },
@@ -201,6 +209,7 @@
             },
             'Полтос': {
                 hp: 950000000,
+                baulPts: 9500,
                 modes: {
                     '1': { dmg: 30000000, max: 2 },
                     '3': { dmg: 40000000, max: 2 },
@@ -210,6 +219,7 @@
             },
             'Мазай': {
                 hp: 25000000,
+                baulPts: 250,
                 modes: {
                     '1': { dmg: null, max: 0 },
                     '3': { dmg: null, max: 0 },
@@ -218,6 +228,7 @@
             },
             'Ёхан': {
                 hp: 7000000,
+                baulPts: 70,
                 modes: {
                     '1': { dmg: null, max: 0 },
                     '3': { dmg: null, max: 0 },
@@ -226,6 +237,7 @@
             },
             'Чебот': {
                 hp: 75000000,
+                baulPts: 750,
                 modes: {
                     '1': { dmg: null, max: 0 },
                     '3': { dmg: null, max: 0 },
@@ -234,6 +246,7 @@
             },
             'Старшой': {
                 hp: 600000000,
+                baulPts: 6000,
                 modes: {
                     '0':  { dmg: 18000000, max: 1 },
                     '1':  { dmg: 18000000, max: 2 },
@@ -244,6 +257,7 @@
             },
             'Дантист': {
                 hp: 100000000,
+                baulPts: 1000,
                 modes: {
                     '1': { dmg: null, max: 0 },
                     '3': { dmg: 9000000, max: 2 },
@@ -252,6 +266,7 @@
             },
             'Контрабас': {
                 hp: 200000000,
+                baulPts: 2000,
                 modes: {
                     '1': { dmg: null, max: 0 },
                     '3': { dmg: 24000000, max: 2 },
@@ -260,6 +275,7 @@
             },
             'Ташкент': {
                 hp: 90000000,
+                baulPts: 900,
                 modes: {
                     '1': { dmg: 3000000, max: 2 },
                     '3': { dmg: null, max: 0 },
@@ -272,6 +288,7 @@
             },
             'Крюгер': {
                 hp: 87500000,
+                baulPts: 875,
                 modes: {
                     '1': { dmg: null, max: 0 },
                     '3': { dmg: null, max: 0 },
@@ -280,6 +297,7 @@
             },
             'Бельмондо': {
                 hp: 125000000,
+                baulPts: 1250,
                 modes: {
                     '1': { dmg: null, max: 0 },
                     '3': { dmg: null, max: 0 },
@@ -288,6 +306,7 @@
             },
             'Сыч': {
                 hp: 1000000000,
+                baulPts: 10000,
                 modes: {
                     '0':  { dmg: 30000000, max: 2 },
                     '1':  { dmg: 30000000, max: 2 },
@@ -298,6 +317,7 @@
             },
             'Гром': {
                 hp: 70000000000,
+                baulPts: 700000,
                 modes: {
                     '1': { dmg: 50000000, max: 3 },
                     '3': { dmg: 60000000, max: 5 },
@@ -306,6 +326,39 @@
                 }
             }
         };
+
+        const BAUL_LEVELS = [
+            { lvl: 1, total: 50 },
+            { lvl: 2, total: 150 },
+            { lvl: 3, total: 300 },
+            { lvl: 4, total: 500 },
+            { lvl: 5, total: 750 },
+            { lvl: 6, total: 1050 },
+            { lvl: 7, total: 1425 },
+            { lvl: 8, total: 1925 },
+            { lvl: 9, total: 2575 },
+            { lvl: 10, total: 3375 },
+            { lvl: 11, total: 4375 },
+            { lvl: 12, total: 5775 },
+            { lvl: 13, total: 7575 },
+            { lvl: 14, total: 9875 },
+            { lvl: 15, total: 12875 },
+            { lvl: 16, total: 16875 },
+            { lvl: 17, total: 22375 },
+            { lvl: 18, total: 29375 },
+            { lvl: 19, total: 38375 },
+            { lvl: 20, total: 50375 },
+            { lvl: 21, total: 64375 },
+            { lvl: 22, total: 81375 },
+            { lvl: 23, total: 101375 },
+            { lvl: 24, total: 123375 },
+            { lvl: 25, total: 148375 },
+            { lvl: 26, total: 176375 },
+            { lvl: 27, total: 208375 },
+            { lvl: 28, total: 245375 },
+            { lvl: 29, total: 288375 },
+            { lvl: 30, total: 338375 }
+        ];
 
         window._BOSSES = BOSSES;
         window._MODES = MODES;
@@ -318,6 +371,8 @@
         const displayBaseHp = container.querySelector('#displayBaseHp');
         const displayDmgPerTatu = container.querySelector('#displayDmgPerTatu');
         const displayMaxTatu = container.querySelector('#displayMaxTatu');
+        const displayBaulPts = container.querySelector('#displayBaulPts');
+        const baulPtsCard = container.querySelector('#baulPtsCard');
         const noDopMessage = container.querySelector('#noDopMessage');
         const noDopCard = container.querySelector('#noDopCard');
         const addBtn = container.querySelector('#addBtn');
@@ -329,6 +384,8 @@
         const totalWinTatu = container.querySelector('#totalWinTatu');
         const totalAllTatu = container.querySelector('#totalAllTatu');
         const totalHp = container.querySelector('#totalHp');
+        const totalBaulPts = container.querySelector('#totalBaulPts');
+        const statBaulPts = container.querySelector('#statBaulPts');
         const exportBtnExcel = document.getElementById('exportBtnExcel');
         const exportBtnPng = document.getElementById('exportBtnPng');
         const importBtn = container.querySelector('#importBtn');
@@ -340,6 +397,22 @@
         const statTotalDmg = container.querySelector('#statTotalDmg');
         const statExtraTatu = container.querySelector('#statExtraTatu');
         const statAllTatu = container.querySelector('#statAllTatu');
+
+        const baulCollect = document.getElementById('baulCollect');
+        const baulLevelSelect = document.getElementById('baulLevel');
+        const baulCountEl = document.getElementById('baulCount');
+        const baulCountSubEl = document.getElementById('baulCountSub');
+        const baulCostEl = document.getElementById('baulCost');
+        const baulRemainEl = document.getElementById('baulRemain');
+        const baulRemainSubEl = document.getElementById('baulRemainSub');
+
+        BAUL_LEVELS.forEach(l => {
+            const opt = document.createElement('option');
+            opt.value = l.lvl;
+            opt.textContent = `${l.lvl} lvl (${fmt(l.total)} очк.)`;
+            if (l.lvl === 30) opt.selected = true;
+            baulLevelSelect.appendChild(opt);
+        });
 
         let bosses = [];
         let nextId = 1;
@@ -366,6 +439,10 @@
 
         function getModeLabel(modeValue) {
             return MODES[modeValue] ? MODES[modeValue].label : modeValue;
+        }
+
+        function getBaulPtsPerWin(name) {
+            return (BOSSES[name] && BOSSES[name].baulPts) || 0;
         }
 
         function isZmei6(boss) {
@@ -402,7 +479,8 @@
             const extraTatu = boss.tatuPerAttack * boss.attackLimit;
             const winTatu = boss.attackLimit;
             const allTatu = extraTatu + winTatu;
-            return { dmgPerAttack, displayDmg, totalDmg, extraTatu, winTatu, allTatu };
+            const baulPts = getBaulPtsPerWin(boss.name) * boss.attackLimit;
+            return { dmgPerAttack, displayDmg, totalDmg, extraTatu, winTatu, allTatu, baulPts };
         }
 
         function isModeLabel(text) {
@@ -463,6 +541,7 @@
                 displayBaseHp.textContent = '0';
                 displayDmgPerTatu.textContent = '0';
                 displayMaxTatu.textContent = '0';
+                displayBaulPts.textContent = '0';
                 tatuSelect.innerHTML = '';
                 noDopMessage.style.display = 'none';
                 noDopCard.style.display = 'none';
@@ -470,6 +549,8 @@
                 modeSelect.innerHTML = '<option value="">— Нет босса —</option>';
                 return;
             }
+
+            displayBaulPts.textContent = fmt(bossData.baulPts || 0);
 
             const availableModes = Object.keys(bossData.modes).sort((a,b) => parseInt(a)-parseInt(b));
             modeSelect.innerHTML = '';
@@ -510,12 +591,15 @@
                 displayBaseHp.textContent = '0';
                 displayDmgPerTatu.textContent = '0';
                 displayMaxTatu.textContent = '0';
+                displayBaulPts.textContent = '0';
                 tatuSelect.innerHTML = '';
                 noDopMessage.style.display = 'none';
                 noDopCard.style.display = 'none';
                 addBtn.disabled = true;
                 return;
             }
+
+            displayBaulPts.textContent = fmt(bossData.baulPts || 0);
 
             const modeData = bossData.modes[mode];
             if (!modeData) {
@@ -679,25 +763,66 @@
 
         function updateStats() {
             statBosses.textContent = bosses.length;
-            let sumDmg = 0, sumExtra = 0, sumAll = 0;
+            let sumDmg = 0, sumExtra = 0, sumAll = 0, sumBaul = 0;
             let sumHp = 0;
             bosses.forEach(boss => {
                 const row = calcBossRow(boss);
                 sumDmg += row.totalDmg;
                 sumExtra += row.extraTatu;
                 sumAll += row.allTatu;
+                sumBaul += row.baulPts;
                 sumHp += getTotalHp(boss);
             });
             statTotalHp.textContent = fmt(sumHp);
             statTotalDmg.textContent = fmt(sumDmg);
             statExtraTatu.textContent = fmt(sumExtra);
             statAllTatu.textContent = fmt(sumAll);
+            statBaulPts.textContent = fmt(sumBaul);
             totalDmg.textContent = fmt(sumDmg);
             totalExtraTatu.textContent = fmt(sumExtra);
             totalWinTatu.textContent = fmt(sumDmg > 0 ? bosses.reduce((s, b) => s + b.attackLimit, 0) : 0);
             totalAllTatu.textContent = fmt(sumAll);
             totalHp.textContent = fmt(sumHp);
+            totalBaulPts.textContent = fmt(sumBaul);
+
+            updateBaulCollect(sumBaul);
         }
+
+        function updateBaulCollect(totalPts) {
+            if (totalPts <= 0) {
+                baulCollect.style.display = 'none';
+                return;
+            }
+            baulCollect.style.display = 'block';
+
+            const lvl = parseInt(baulLevelSelect.value) || 30;
+            const lvlData = BAUL_LEVELS[lvl - 1];
+            const cost = lvlData.total;
+            const count = Math.floor(totalPts / cost);
+            const remain = totalPts - count * cost;
+
+            baulCountEl.textContent = count;
+            baulCountSubEl.textContent = `уровня ${lvl}`;
+            baulCostEl.textContent = fmt(cost);
+            baulRemainEl.textContent = fmt(remain);
+
+            if (count === 0) {
+                baulRemainSubEl.textContent = `не хватает ${fmt(cost - totalPts)} очков до 1 баула`;
+            } else if (remain === 0) {
+                baulRemainSubEl.textContent = 'ровно без остатка';
+            } else {
+                baulRemainSubEl.textContent = `до след. баула ещё ${fmt(cost - remain)}`;
+            }
+        }
+
+        baulLevelSelect.addEventListener('change', () => {
+            let sum = 0;
+            bosses.forEach(b => {
+                const row = calcBossRow(b);
+                sum += row.baulPts;
+            });
+            updateBaulCollect(sum);
+        });
 
         function renderTable() {
             if (bosses.length === 0) {
@@ -705,6 +830,7 @@
                 tableFoot.style.display = 'none';
                 emptyMessage.style.display = 'block';
                 selectAll.checked = false;
+                baulCollect.style.display = 'none';
                 return;
             }
             emptyMessage.style.display = 'none';
@@ -712,7 +838,7 @@
 
             let html = '';
             bosses.forEach((boss, index) => {
-                const { dmgPerAttack, displayDmg, totalDmg, extraTatu, winTatu, allTatu } = calcBossRow(boss);
+                const { dmgPerAttack, displayDmg, totalDmg, extraTatu, winTatu, allTatu, baulPts } = calcBossRow(boss);
 
                 html += `<tr class="boss-row" data-index="${index}">`;
                 html += `<td><input type="checkbox" class="row-checkbox" data-id="${boss.id}"></td>`;
@@ -728,6 +854,7 @@
                 html += `<td><span class="static-text">${fmt(extraTatu)}</span></td>`;
                 html += `<td><span class="static-text">${fmt(winTatu)}</span></td>`;
                 html += `<td><span class="static-text">${fmt(allTatu)}</span></td>`;
+                html += `<td><span class="static-text">🎁 ${fmt(baulPts)}</span></td>`;
                 html += `<td><button class="del-btn" data-id="${boss.id}">✕</button></td>`;
                 html += `</tr>`;
             });
@@ -784,18 +911,18 @@
         function exportXLS() {
             if (bosses.length === 0) { showToast('⚠️ Нет данных для экспорта'); return null; }
             let html = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="UTF-8"><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>Боссы</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--><style>table{border-collapse:collapse;font-family:'Segoe UI',sans-serif;font-size:12pt;}th{background:#dce5f0;font-weight:bold;text-align:center;border:1px solid #999;padding:6px;}td{border:1px solid #999;padding:6px;text-align:center;}.total{background:#0b1a2e;color:#ffffff;font-weight:bold;}.total td{color:#ffffff;}</style></head><body>`;
-            const headers = ['Босс','Режим','HP','Итоговое HP','Урон на 1 доп. тату','Доп. тату за нападение','Лимит нападений','Урон за нападение','Общий урон','Доп. тату','Тату за победы','Всего тату'];
+            const headers = ['Босс','Режим','HP','Итоговое HP','Урон на 1 доп. тату','Доп. тату за нападение','Лимит нападений','Урон за нападение','Общий урон','Доп. тату','Тату за победы','Всего тату','🎁 Баул'];
             html += '<table><thead>' + xlsWatermarkRow(headers.length) + '<tr>';
             headers.forEach(h => html += `<th>${h}</th>`);
             html += '</tr></thead><tbody>';
-            let sumHp=0,sumDmg=0,sumExtra=0,sumWin=0,sumAll=0;
+            let sumHp=0,sumDmg=0,sumExtra=0,sumWin=0,sumAll=0,sumBaul=0;
             bosses.forEach(boss => {
-                const { dmgPerAttack, displayDmg, totalDmg, extraTatu, winTatu, allTatu } = calcBossRow(boss);
-                html += `<tr>${xlsText(boss.name)}${xlsText(getModeLabel(boss.mode))}${xlsNum(getHpPerAttack(boss))}${xlsNum(getTotalHp(boss))}${xlsNum(displayDmg)}${xlsNum(boss.tatuPerAttack)}${xlsNum(boss.attackLimit)}${xlsNum(dmgPerAttack)}${xlsNum(totalDmg)}${xlsNum(extraTatu)}${xlsNum(winTatu)}${xlsNum(allTatu)}</tr>`;
+                const { dmgPerAttack, displayDmg, totalDmg, extraTatu, winTatu, allTatu, baulPts } = calcBossRow(boss);
+                html += `<tr>${xlsText(boss.name)}${xlsText(getModeLabel(boss.mode))}${xlsNum(getHpPerAttack(boss))}${xlsNum(getTotalHp(boss))}${xlsNum(displayDmg)}${xlsNum(boss.tatuPerAttack)}${xlsNum(boss.attackLimit)}${xlsNum(dmgPerAttack)}${xlsNum(totalDmg)}${xlsNum(extraTatu)}${xlsNum(winTatu)}${xlsNum(allTatu)}${xlsNum(baulPts)}</tr>`;
                 sumHp += getTotalHp(boss);
-                sumDmg += totalDmg; sumExtra += extraTatu; sumWin += winTatu; sumAll += allTatu;
+                sumDmg += totalDmg; sumExtra += extraTatu; sumWin += winTatu; sumAll += allTatu; sumBaul += baulPts;
             });
-            html += `<tr class="total"><td colspan="2">ИТОГО</td><td></td>${xlsNum(sumHp)}<td colspan="4"></td>${xlsNum(sumDmg)}${xlsNum(sumExtra)}${xlsNum(sumWin)}${xlsNum(sumAll)}</tr>`;
+            html += `<tr class="total"><td colspan="2">ИТОГО</td><td></td>${xlsNum(sumHp)}<td colspan="4"></td>${xlsNum(sumDmg)}${xlsNum(sumExtra)}${xlsNum(sumWin)}${xlsNum(sumAll)}${xlsNum(sumBaul)}</tr>`;
             html += '</tbody></table></body></html>';
             return html;
         }
@@ -1366,12 +1493,6 @@
             }
         });
 
-        // ============================================================
-        // ЭКСПОРТ EXCEL ДЛЯ СПИСКА БОССОВ
-        // Категории идут друг под другом (вертикально), у каждой —
-        // чёрная шапка с белым текстом, как на референсе. Жёлтым
-        // подсвечиваются только ячейки с допками.
-        // ============================================================
         document.getElementById('exportBtn2').addEventListener('click', function() {
             const DOP_BG = '#ffc107';
             const DOP_FG = '#1a1a1a';
@@ -1382,7 +1503,6 @@
 
             html += `<table style="border-collapse:collapse;font-family:'Segoe UI',sans-serif;font-size:11pt;">`;
 
-            // водяной знак сверху
             const maxCols = Math.max(...categories.map(c => (columnsConfig[c] || []).length));
             html += xlsWatermarkRow(maxCols, 'Жёлтая заливка — в этом режиме можно пробить доп. награды (допки).');
 
@@ -1391,22 +1511,18 @@
                 if (list.length === 0) return;
                 const columns = columnsConfig[cat] || ['Босс', 'Пацанский', 'Блатной', 'Авторитетный'];
 
-                // отступ между категориями
                 if (catIdx > 0) {
                     html += `<tr><td colspan="${maxCols}" style="border:none;height:18px;"></td></tr>`;
                 }
 
-                // заголовок категории
                 html += `<tr><td colspan="${columns.length}" style="border:none;text-align:left;font-size:15pt;font-weight:700;color:#000;padding:6px 0 4px;">${cat} (${list.length})</td></tr>`;
 
-                // чёрная шапка
                 html += `<tr>`;
                 columns.forEach(col => {
                     html += `<th style="background:#000000;color:#ffffff;border:1px solid #000000;padding:6px 10px;text-align:center;font-weight:700;font-size:11pt;">${col}</th>`;
                 });
                 html += `</tr>`;
 
-                // строки
                 list.forEach((boss, rowIdx) => {
                     const rowBg = rowIdx % 2 === 1 ? '#f7f7f7' : '#ffffff';
                     const borderCol = '#e0e0e0';
