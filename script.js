@@ -409,7 +409,7 @@
         BAUL_LEVELS.forEach(l => {
             const opt = document.createElement('option');
             opt.value = l.lvl;
-            opt.textContent = `${l.lvl} lvl (${fmt(l.total)} очк.)`;
+            opt.textContent = `${l.lvl} уровень`;
             if (l.lvl === 30) opt.selected = true;
             baulLevelSelect.appendChild(opt);
         });
@@ -802,7 +802,9 @@
             const remain = totalPts - count * cost;
 
             baulCountEl.textContent = count;
-            baulCountSubEl.textContent = `уровня ${lvl}`;
+            baulCountSubEl.textContent = count === 1
+                ? `баул ${lvl} lvl`
+                : `баулов ${lvl} lvl`;
             baulCostEl.textContent = fmt(cost);
             baulRemainEl.textContent = fmt(remain);
 
